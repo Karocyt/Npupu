@@ -2,7 +2,6 @@ package solver
 
 import (
 	"errors"
-	"fmt"
 	"sort"
 )
 
@@ -20,10 +19,12 @@ func (solver *Solver) appendNextStates() {
 				newState.score = solver.fn(newState.grid, size)
 				nextStates = append(nextStates, newState)
 			}
+		}
 
-			if len(nextStates) == 0 && len(solver.openedStates) > 0 {
-				solver.openedStates = solver.openedStates[0 : len(solver.openedStates)-1]
-				solver.Solution = solver.Solution[0 : len(solver.Solution)-2]
+		if len(nextStates) == 0 && len(solver.openedStates) > 0 {
+			solver.openedStates = solver.openedStates[0 : len(solver.openedStates)-1]
+			if len(solver.Solution) > 0 {
+				solver.Solution = solver.Solution[0 : len(solver.Solution)-1]
 			}
 		}
 	}
@@ -38,7 +39,7 @@ func (solver *Solver) appendNextStates() {
 		solver.totalOpenedStates++
 		solver.depth = newState.depth
 	}
-	fmt.Println()
+	//fmt.Println()
 	if len(solver.openedStates) > solver.maxOpenedStates {
 		solver.maxOpenedStates = len(solver.openedStates)
 	}

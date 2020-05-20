@@ -3,9 +3,8 @@ package heuristics
 func abs(nb int) int {
 	if nb < 0 {
 		return -nb
-	} else {
-		return nb
 	}
+	return nb
 }
 
 func get1d(x int, y int, size int) int {

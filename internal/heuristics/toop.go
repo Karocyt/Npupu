@@ -4,10 +4,8 @@ func tScore(puzzle []int, nb int, x int, y int, size int) float32 {
 	nb1 := puzzle[get1d(x, y, size)]
 	if nb == nb1 {
 		return 0
-	} else {
-		return 1
 	}
-	return 0
+	return 1
 }
 
 // Tiles out-of place

@@ -1,12 +1,9 @@
 package heuristics
 
-import "fmt"
-
 func mScore(nb int, x int, y int, size int) float32 {
 	tmp := nb_pos[nb]
 	x1 := tmp[0]
 	y1 := tmp[1]
-	fmt.Println(tmp, nb)
 	return float32(abs((x1 - x)) + abs((y1 - y)))
 }
 
