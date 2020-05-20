@@ -23,8 +23,8 @@ func mainfunc() int {
 		return 1
 	}
 	for _, currH := range h {
-		s := solver.New()
-		e = s.Solve(tmp, size, heuristics.Functions[currH].Fn)
+		s := solver.New(tmp, size, heuristics.Functions[currH].Fn)
+		e = s.Solve()
 		if e != nil {
 			fmt.Fprint(os.Stderr, e)
 			return 1
