@@ -3,7 +3,7 @@ package heuristics
 // all heuristic functions should be of type func([]int) string
 
 type heuristicFn struct {
-	Fn      func(grid []int) int
+	Fn      func(grid []int, size int) int
 	Name    string
 	Uniform bool
 }
@@ -18,16 +18,16 @@ var Functions = []heuristicFn{
 }
 
 // test function: Dummy heuristic, scoring nothing and returning 0, yay!
-func test(grid []int) int {
+func test(grid []int, size int) int {
 	return (0)
 }
 
 // manhattan distance function: most basic heuristic we can do
-func manhattan(grid []int) int {
+func manhattan(grid []int, size int) int {
 	return (0)
 }
 
 // euclidean distance function: other basic heuristic
-func euclidean(grid []int) int {
+func euclidean(grid []int, size int) int {
 	return (0)
 }

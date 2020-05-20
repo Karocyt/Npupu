@@ -3,7 +3,7 @@ package solver
 import "errors"
 
 // scoreFn type: heuristic functions prototype
-type scoreFn func([]int) int
+type scoreFn func([]int, int) int
 
 // Solver contains all variables required to solve the grid
 // Solver.Solution contains ordered states from the starting grid to the solved one
@@ -27,7 +27,7 @@ func New(grid []int, gridSize int, fn scoreFn) Solver {
 		grid:  grid,
 		size:  gridSize,
 		depth: 0,
-		score: fn(grid),
+		score: fn(grid, gridSize),
 	}
 	solver.fn = fn
 	solver.Solution = append(solver.Solution, state)
@@ -54,7 +54,7 @@ func (solver *Solver) appendNextStates() {
 	solver.explored[key] = true
 	for _, newState := range state.generateNextStates() {
 		if solver.hasSeen(newState) == false {
-			newState.score = solver.fn(newState.grid)
+			newState.score = solver.fn(newState.grid, newState.size)
 			solver.openedStates = append(solver.openedStates, newState)
 			solver.totalOpenedStates++
 		}
