@@ -13,7 +13,6 @@ func e_score(nb int, x int, y int, size int) float32 {
 	return float32(math.Sqrt(dx * dx + dy * dy))
 }
 
-
 // euclidean distance function: other basic heuristic
 func euclidean(grid []int, size int) float32 {
 	var score float32
