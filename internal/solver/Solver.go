@@ -1,7 +1,5 @@
 package solver
 
-import "errors"
-
 // scoreFn type: heuristic functions prototype
 type scoreFn func([]int, int) int
 
@@ -15,12 +13,13 @@ type Solver struct {
 	explored          map[string]bool
 	Solution          []gridState
 	fn                scoreFn
+	greedy            bool
 }
 
 // New initialize a new solverStruct, required to disciminate variables in multi-solving
 // Can be removed if we don't need to initialize anything
 // (we can use "var s Solver.Solver" in main instead of calling this)
-func New(grid []int, gridSize int, fn scoreFn) Solver {
+func New(grid []int, gridSize int, fn scoreFn, greedy bool) Solver {
 	var solver Solver
 
 	state := gridState{
@@ -34,34 +33,13 @@ func New(grid []int, gridSize int, fn scoreFn) Solver {
 	solver.explored = make(map[string]bool, 1000)
 	solver.openedStates = append(solver.openedStates, state)
 	solver.totalOpenedStates++
+	solver.greedy = greedy
 	return solver
 }
 
 func (solver *Solver) hasSeen(state gridState) bool {
 	key := state.String() // might be better with a fastString() method
 	return solver.explored[key]
-}
-
-func (solver *Solver) appendNextStates() {
-	state := solver.openedStates[len(solver.openedStates)-1]
-	/* TODO:
-	if state.depth != solver.depth
-		pop from solution and decrement solver.depth
-	else
-		increment solver.depth
-	*/
-	key := state.String()
-	solver.explored[key] = true
-	for _, newState := range state.generateNextStates() {
-		if solver.hasSeen(newState) == false {
-			newState.score = solver.fn(newState.grid, newState.size)
-			solver.openedStates = append(solver.openedStates, newState)
-			solver.totalOpenedStates++
-		}
-	}
-	if len(solver.openedStates) > solver.maxOpenedStates {
-		solver.maxOpenedStates = len(solver.openedStates)
-	}
 }
 
 /*Solve Function:
@@ -72,16 +50,15 @@ func (solver *Solver) appendNextStates() {
 ** return value: error e (unsolvable)
  */
 func (solver *Solver) Solve() (e error) {
-	for solver.Solution[len(solver.Solution)-1].score > 0 {
-		solver.appendNextStates()
-		if len(solver.Solution) == 0 {
-			return errors.New("ERROR: Unsolvable puzzle")
-		}
+	if solver.greedy {
+		e = solver.greedySearch()
+	} else {
+		e = solver.uniformCostSearch()
 	}
 	return
 }
 
 // PrintStats does exactly what it says
 func (solver *Solver) PrintStats() {
-
+	/* TODO */
 }

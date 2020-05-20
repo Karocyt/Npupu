@@ -43,7 +43,7 @@ func mainfunc() int {
 	tmp, size, h, e := parser.Parse(len(heuristics.Functions))
 	printError(e)
 	for _, currH := range h {
-		s := solver.New(tmp, size, heuristics.Functions[currH].Fn)
+		s := solver.New(tmp, size, heuristics.Functions[currH].Fn, heuristics.Functions[currH].Greedy)
 		e = s.Solve()
 		printError(e)
 		printSolution(s, heuristics.Functions[currH].Name)

@@ -3,9 +3,9 @@ package heuristics
 // all heuristic functions should be of type func([]int) string
 
 type heuristicFn struct {
-	Fn      func(grid []int, size int) int
-	Name    string
-	Uniform bool
+	Fn     func(grid []int, size int) int
+	Name   string
+	Greedy bool
 }
 
 // Functions is our slice of heuristics as couples {function func, name string, greedy bool}
