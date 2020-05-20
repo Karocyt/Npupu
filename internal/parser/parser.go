@@ -2,7 +2,6 @@ package parser
 
 import (
 	"bufio"
-	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -20,7 +19,7 @@ func isValid(str string) bool {
 	return true
 }
 
-func read() ([][]int, int) {
+func read() ([]int, int) {
 	file, err := os.Open(os.Args[1])
 
 	if err != nil {
@@ -30,7 +29,7 @@ func read() ([][]int, int) {
 
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanLines)
-	var pupu [][]int
+	var pupu []int
 	var size int
 
 	for scanner.Scan() {
@@ -41,11 +40,8 @@ func read() ([][]int, int) {
 			break
 		}
 	}
-	fmt.Println(size)
-	pupu = make([][]int, size)
-	for i := 0; i < size; i++ {
-		pupu[i] = make([]int, size)
-	}
+	//fmt.Println(size)
+	pupu = make([]int, size*size)
 	var x int
 	for scanner.Scan() {
 		tmp := strings.TrimSpace(scanner.Text())
@@ -53,7 +49,7 @@ func read() ([][]int, int) {
 			tmp := strings.Split(tmp, "#")
 			tmp = strings.Split(tmp[0], " ")
 			for i := 0; i < size; i++ {
-				pupu[x][i], _ = strconv.Atoi(tmp[i])
+				pupu[x*size+i], _ = strconv.Atoi(tmp[i])
 			}
 		}
 		x++
@@ -64,10 +60,9 @@ func read() ([][]int, int) {
 }
 
 // Parse function: Only exported function
-func Parse() ([][]int, int) {
-	var pupu [][]int
+func Parse(heuristicsCount int) (pupu []int, size int, heuristics []int, e error) {
 
 	pupu, size = read()
-
-	return pupu, size
+	heuristics = []int{0}
+	return
 }
