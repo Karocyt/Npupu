@@ -11,16 +11,19 @@ func (solver *Solver) appendNextStates() {
 	key := state.mapKey()
 	solver.explored[key] = true
 	nextStates := make([]gridState, 0, 4)
+
 	for len(nextStates) == 0 && len(solver.openedStates) > 0 {
-		solver.openedStates = solver.openedStates[0 : len(solver.openedStates)-1]
-		if len(solver.openedStates) > 1 {
-			state := solver.openedStates[len(solver.openedStates)-1]
-			solver.depth = state.depth
-			for i, newState := range state.generateNextStates() {
-				if solver.hasSeen(newState) == false {
-					nextStates = append(nextStates, newState)
-					nextStates[i].score = solver.fn(nextStates[i].grid, size)
-				}
+		state := solver.openedStates[len(solver.openedStates)-1]
+		solver.depth = state.depth
+		for _, newState := range state.generateNextStates() {
+			if solver.hasSeen(newState) == false {
+				newState.score = solver.fn(newState.grid, size)
+				nextStates = append(nextStates, newState)
+			}
+
+			if len(nextStates) == 0 && len(solver.openedStates) > 0 {
+				solver.openedStates = solver.openedStates[0 : len(solver.openedStates)-1]
+				solver.Solution = solver.Solution[0 : len(solver.Solution)-1]
 			}
 		}
 	}
@@ -29,12 +32,11 @@ func (solver *Solver) appendNextStates() {
 	})
 	fmt.Println(state)
 	for _, newState := range nextStates {
-		if solver.hasSeen(newState) == false {
-			fmt.Println(newState.score)
-			solver.openedStates = append(solver.openedStates, newState)
-			solver.totalOpenedStates++
-			solver.depth = newState.depth
-		}
+		fmt.Println(newState.score)
+		solver.Solution = append(solver.Solution, newState)
+		solver.openedStates = append(solver.openedStates, newState)
+		solver.totalOpenedStates++
+		solver.depth = newState.depth
 	}
 	fmt.Println()
 	if len(solver.openedStates) > solver.maxOpenedStates {
