@@ -2,6 +2,7 @@ package parser
 
 import (
 	"bufio"
+	"errors"
 	"log"
 	"os"
 	"strconv"
@@ -61,8 +62,22 @@ func read() ([]int, int) {
 
 // Parse function: Only exported function
 func Parse(heuristicsCount int) (pupu []int, size int, heuristics []int, e error) {
-
 	pupu, size = read()
-	heuristics = []int{0}
+	heuristics = []int{}
+	for i := 2; i < len(os.Args); i++ {
+		var h int
+		h, e = strconv.Atoi(os.Args[i])
+		if e == nil && (h >= heuristicsCount || h < 0) {
+			e = errors.New("Invalid heuristic")
+		}
+		if e != nil {
+			return // pupu, size, heuristics, e
+		}
+		heuristics = append(heuristics, h)
+
+	}
+	if len(heuristics) == 0 {
+		e = errors.New("Please provide a heuristic")
+	}
 	return
 }

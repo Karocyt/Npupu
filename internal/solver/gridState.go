@@ -33,7 +33,11 @@ func (state gridState) String() string {
 	s += "\n"
 	for i := 0; i < state.size; i++ {
 		for j := 0; j < state.size; j++ {
-			s += fmt.Sprintf("#%2d #", state.grid[i*state.size+j])
+			if state.grid[i*state.size+j] != 0 {
+				s += fmt.Sprintf("#%2d #", state.grid[i*state.size+j])
+			} else {
+				s += "#   #"
+			}
 		}
 		s += "\n"
 		for j := 0; j < state.size; j++ {

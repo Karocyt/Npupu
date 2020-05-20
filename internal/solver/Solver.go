@@ -8,12 +8,13 @@ type scoreFn func([]int) int
 // Solver contains all variables required to solve the grid
 // Solver.Solution contains ordered states from the starting grid to the solved one
 type Solver struct {
-	maxOpenedStates int
-	openedStates    []gridState
-	depth           int
-	explored        map[string]bool
-	Solution        []gridState
-	fn              scoreFn
+	maxOpenedStates   int
+	totalOpenedStates int
+	openedStates      []gridState
+	depth             int
+	explored          map[string]bool
+	Solution          []gridState
+	fn                scoreFn
 }
 
 // New initialize a new solverStruct, required to disciminate variables in multi-solving
@@ -32,6 +33,7 @@ func New(grid []int, gridSize int, fn scoreFn) Solver {
 	solver.Solution = append(solver.Solution, state)
 	solver.explored = make(map[string]bool, 1000)
 	solver.openedStates = append(solver.openedStates, state)
+	solver.totalOpenedStates++
 	return solver
 }
 
@@ -54,6 +56,7 @@ func (solver *Solver) appendNextStates() {
 		if solver.hasSeen(newState) == false {
 			newState.score = solver.fn(newState.grid)
 			solver.openedStates = append(solver.openedStates, newState)
+			solver.totalOpenedStates++
 		}
 	}
 	if len(solver.openedStates) > solver.maxOpenedStates {
@@ -76,4 +79,9 @@ func (solver *Solver) Solve() (e error) {
 		}
 	}
 	return
+}
+
+// PrintStats does exactly what it says
+func (solver *Solver) PrintStats() {
+
 }
