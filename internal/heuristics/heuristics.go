@@ -25,7 +25,4 @@ func test(grid []int, size int) float32 {
 
 
 
-// euclidean distance function: other basic heuristic
-func euclidean(grid []int, size int) float32 {
-	return (0)
-}
+
