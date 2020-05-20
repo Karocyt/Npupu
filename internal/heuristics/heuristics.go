@@ -13,6 +13,8 @@ var Functions = []heuristicFn{
 	heuristicFn{test, "Fake heuristic", true},
 	heuristicFn{manhattan, "Greedy Manhattan Distance", true},
 	heuristicFn{manhattan, "Uniform-cost Manhattan Distance", false},
+	heuristicFn{euclidean, "Greedy Euclidean Distance", true},
+	heuristicFn{euclidean, "Uniform-cost Euclidean Distance", false},
 }
 
 // test function: Dummy heuristic, scoring nothing and returning 0, yay!
@@ -22,5 +24,10 @@ func test(grid []int) int {
 
 // manhattan distance function: most basic heuristic we can do
 func manhattan(grid []int) int {
+	return (0)
+}
+
+// euclidean distance function: other basic heuristic
+func euclidean(grid []int) int {
 	return (0)
 }
