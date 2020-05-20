@@ -16,15 +16,17 @@ type Solver struct {
 	greedy            bool
 }
 
+var size int
+
 // New initialize a new solverStruct, required to disciminate variables in multi-solving
 // Can be removed if we don't need to initialize anything
 // (we can use "var s Solver.Solver" in main instead of calling this)
 func New(grid []int, gridSize int, fn scoreFn, greedy bool) Solver {
 	var solver Solver
 
+	size = gridSize
 	state := gridState{
 		grid:  grid,
-		size:  gridSize,
 		depth: 0,
 		score: fn(grid, gridSize),
 	}
@@ -38,7 +40,7 @@ func New(grid []int, gridSize int, fn scoreFn, greedy bool) Solver {
 }
 
 func (solver *Solver) hasSeen(state gridState) bool {
-	key := state.String() // might be better with a fastString() method
+	key := state.mapKey()
 	return solver.explored[key]
 }
 
