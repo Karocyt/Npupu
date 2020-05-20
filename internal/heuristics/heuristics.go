@@ -10,7 +10,7 @@ type heuristicFn struct {
 
 // Functions is our slice of heuristics as couples {function func, name string, greedy bool}
 var Functions = []heuristicFn{
-	heuristicFn{test, "Fake heuristic", true},
+	heuristicFn{toop, "Fake heuristic", true},
 	heuristicFn{manhattan, "Greedy Manhattan Distance", true},
 	heuristicFn{manhattan, "Uniform-cost Manhattan Distance", false},
 	heuristicFn{euclidean, "Greedy Euclidean Distance", true},
