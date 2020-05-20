@@ -23,16 +23,16 @@ func (solver *Solver) appendNextStates() {
 
 			if len(nextStates) == 0 && len(solver.openedStates) > 0 {
 				solver.openedStates = solver.openedStates[0 : len(solver.openedStates)-1]
-				solver.Solution = solver.Solution[0 : len(solver.Solution)-1]
+				solver.Solution = solver.Solution[0 : len(solver.Solution)-2]
 			}
 		}
 	}
 	sort.Slice(nextStates, func(i, j int) bool {
 		return nextStates[i].score > nextStates[j].score
 	})
-	fmt.Println(state)
+	//fmt.Println(state)
 	for _, newState := range nextStates {
-		fmt.Println(newState.score)
+		//fmt.Println(newState.score)
 		solver.Solution = append(solver.Solution, newState)
 		solver.openedStates = append(solver.openedStates, newState)
 		solver.totalOpenedStates++

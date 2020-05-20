@@ -1,7 +1,5 @@
 package heuristics
 
-import "fmt"
-
 func abs(nb int) int {
 	if nb < 0 {
 		return -nb
@@ -21,8 +19,8 @@ func get2d(nb int, size int) (int, int) {
 	return x, y
 }
 
-func makeGoal(s int) ([]int, map[int] [2]int ) {
-	nb_pos = make(map[int] [2]int)
+func makeGoal(s int) ([]int, map[int][2]int) {
+	nb_pos = make(map[int][2]int)
 	puzzle := make([]int, s*s)
 	cur := 1
 	x := 0
@@ -46,7 +44,6 @@ func makeGoal(s int) ([]int, map[int] [2]int ) {
 	}
 	nb_pos[0] = [2]int{y, x}
 	puzzle[x+y*s] = 0
-	fmt.Println(puzzle, nb_pos)
 	return puzzle, nb_pos
 
 }
