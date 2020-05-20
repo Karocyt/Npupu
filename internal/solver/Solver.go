@@ -1,7 +1,7 @@
 package solver
 
 // scoreFn type: heuristic functions prototype
-type scoreFn func([]int, int) int
+type scoreFn func([]int, int) float32
 
 // Solver contains all variables required to solve the grid
 // Solver.Solution contains ordered states from the starting grid to the solved one

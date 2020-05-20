@@ -7,7 +7,7 @@ type gridState struct {
 	grid  []int
 	size  int // to avoid using math.Sqrt everywhere
 	depth int
-	score int
+	score float32
 }
 
 func (state *gridState) get(x, y int) int {
@@ -45,5 +45,5 @@ func (state gridState) String() string {
 		}
 		s += "\n"
 	}
-	return fmt.Sprintf("Step %d:\n%sScore: %d\n", state.depth, s, state.score)
+	return fmt.Sprintf("Step %d:\n%sScore: %f\n", state.depth, s, state.score)
 }

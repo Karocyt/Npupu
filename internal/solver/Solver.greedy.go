@@ -1,6 +1,9 @@
 package solver
 
-import "errors"
+import (
+	"errors"
+	"sort"
+)
 
 func (solver *Solver) appendNextStates() {
 	state := solver.openedStates[len(solver.openedStates)-1]
@@ -12,7 +15,11 @@ func (solver *Solver) appendNextStates() {
 	*/
 	key := state.String()
 	solver.explored[key] = true
-	for _, newState := range state.generateNextStates() {
+	nextStates := state.generateNextStates()
+	sort.Slice(nextStates, func(i, j int) bool {
+		return nextStates[i].score < nextStates[j].score
+	})
+	for _, newState := range nextStates {
 		if solver.hasSeen(newState) == false {
 			newState.score = solver.fn(newState.grid, newState.size)
 			solver.openedStates = append(solver.openedStates, newState)
