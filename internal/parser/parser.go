@@ -1,4 +1,4 @@
-package main
+package parser
 
 import (
 	"bufio"
@@ -9,6 +9,8 @@ import (
 	"strings"
 )
 
+var size int
+
 func isValid(str string) bool {
 	for c := range str {
 		if c < '0' || c > '9' {
@@ -18,8 +20,7 @@ func isValid(str string) bool {
 	return true
 }
 
-
-func read() ([][] int, int) {
+func read() ([][]int, int) {
 	file, err := os.Open(os.Args[1])
 
 	if err != nil {
@@ -29,7 +30,7 @@ func read() ([][] int, int) {
 
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanLines)
-	var pupu [][] int
+	var pupu [][]int
 	var size int
 
 	for scanner.Scan() {
@@ -41,7 +42,7 @@ func read() ([][] int, int) {
 		}
 	}
 	fmt.Println(size)
-	pupu = make([][] int, size)
+	pupu = make([][]int, size)
 	for i := 0; i < size; i++ {
 		pupu[i] = make([]int, size)
 	}
@@ -52,7 +53,7 @@ func read() ([][] int, int) {
 			tmp := strings.Split(tmp, "#")
 			tmp = strings.Split(tmp[0], " ")
 			for i := 0; i < size; i++ {
-				pupu[x][i] , _ = strconv.Atoi(tmp[i])
+				pupu[x][i], _ = strconv.Atoi(tmp[i])
 			}
 		}
 		x++
@@ -62,11 +63,11 @@ func read() ([][] int, int) {
 	return pupu, size
 }
 
+// Parse function: Only exported function
+func Parse() ([][]int, int) {
+	var pupu [][]int
 
-func parse() ([][]int, int) {
-	var pupu [][] int
-
-	pupu , size = read()
+	pupu, size = read()
 
 	return pupu, size
 }

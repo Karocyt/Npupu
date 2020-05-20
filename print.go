@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-func print_case(v[] int, s int) {
+func print_case(v []int, s int) {
 
 	for i := 0; i < s; i++ {
 		fmt.Printf("#%2d #", v[i])
@@ -19,8 +19,8 @@ func print_pup(pupu [][]int, size int) {
 		fmt.Print("#####")
 	}
 	fmt.Println()
-	for i := 0 ; i < size; i++ {
-			print_case(pupu[i], size)
-		}
+	for i := 0; i < size; i++ {
+		print_case(pupu[i], size)
+	}
 
 }

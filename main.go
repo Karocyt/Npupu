@@ -1,8 +1,14 @@
 package main
 
-import "os"
+import (
+	"os"
+
+	"github.com/Karocyt/Npupu/internal/parser"
+)
 
 func mainfunc() int {
+	tmp, size := parser.Parse()
+	print_pup(tmp, size)
 	return (0)
 }
 
