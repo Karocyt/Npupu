@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -21,24 +20,31 @@ func isValid(str string) bool {
 	return true
 }
 
-func read() ([]int, int) {
-	file, err := os.Open(os.Args[1])
+func read() (pupu []int, size int,  e error) {
+//	var e error
+//	var pupu []int
+//	var size int
 
-	if err != nil {
-		log.Fatalf("failed opening file: %s", err)
-		os.Exit(-1)
+	file, e := os.Open(os.Args[1])
+
+	if e != nil {
+		e = errors.New("failed opening file:" )
+		return
 	}
 
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanLines)
-	var pupu []int
-	var size int
+
 
 	for scanner.Scan() {
 		tmp := strings.TrimSpace(scanner.Text())
 		if len(tmp) > 0 && tmp[0] != '#' {
 			tmp := strings.Split(tmp, "#")
-			size, _ = strconv.Atoi(tmp[0])
+			size, e = strconv.Atoi(tmp[0])
+			if e != nil {
+				e = errors.New("bad size number" )
+				return
+			}
 			break
 		}
 	}
@@ -47,17 +53,19 @@ func read() ([]int, int) {
 	var x int
 	for scanner.Scan() {
 		tmp := strings.TrimSpace(scanner.Text())
-		if tmp[0] == '#' {continue}
+
 		if tmp == "" {continue}
+		if tmp[0] == '#' {continue}
 		if len(tmp) > 0 && tmp[0] != '#' {
 			tmp := strings.Split(tmp, "#")
 			if tmp[0][0] == '#' {continue}
-			fmt.Println(tmp)
+			tmp[0] = strings.TrimSpace(tmp[0])
 			tmp = strings.Split(tmp[0], " ")
 			for i := 0; i < size; i++ {
 				if len(tmp) != size {
-					log.Fatalf("bad file")
-					os.Exit(-1)
+					fmt.Println(tmp, len(tmp))
+					e = errors.New("bad size line")
+					return
 				}
 				pupu[x*size+i], _ = strconv.Atoi(tmp[i])
 			}
@@ -65,12 +73,11 @@ func read() ([]int, int) {
 		x++
 	}
 	file.Close()
-
-	if !check_pupu(pupu, size  * size) {
-		log.Fatalf("bad file")
-		os.Exit(-1)
+	e = check_pupu(pupu, size  * size)
+	if e != nil  {
+		return
 	}
-	return pupu, size
+	return
 }
 
 
@@ -78,7 +85,8 @@ func read() ([]int, int) {
 
 // Parse function: Only exported function
 func Parse(heuristicsCount int) (pupu []int, size int, heuristics []int, e error) {
-	pupu, size = read()
+	pupu, size, e = read()
+	if e != nil { return }
 	heuristics = []int{}
 	for i := 2; i < len(os.Args); i++ {
 		var h int
