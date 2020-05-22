@@ -16,7 +16,7 @@ type Solver struct {
 	fn              scoreFn
 	greedy          bool
 	dady			*Solver
-	kid 			*Solver
+	kid 			[]Solver
 }
 
 var size int
