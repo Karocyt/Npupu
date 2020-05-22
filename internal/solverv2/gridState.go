@@ -1,4 +1,4 @@
-package solverV2
+package solverv2
 
 import (
 	"fmt"

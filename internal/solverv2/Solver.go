@@ -1,4 +1,4 @@
-package solverV2
+package solverv2
 
 // scoreFn type: heuristic functions prototype
 type scoreFn func([]int, int) float32
