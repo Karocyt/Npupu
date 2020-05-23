@@ -8,15 +8,17 @@ var totalOpenedStates int
 
 // Solver contains all variables required to solve the grid
 // Solver.Solution contains ordered states from the starting grid to the solved one
+
+
 type Solver struct {
-	maxOpenedStates	int
-	openedStates    []gridState
-	depth			int
-	//	Solution        []gridState
-	fn              scoreFn
-	greedy          bool
 	dady			*Solver
+	id 				int
+	state			gridState
+	depth			int
+	fn              scoreFn
 	kid 			[]Solver
+	open 			bool
+	vu 				bool
 }
 
 var size int
@@ -36,9 +38,8 @@ func New(grid []int, gridSize int, fn scoreFn, greedy bool) Solver {
 	solver.fn = fn
 //	solver.Solution = append(solver.Solution, state)
 //	solver.explored = make(map[string]bool, 1000)
-	solver.openedStates = append(solver.openedStates, state)
+	solver.state = state
 	totalOpenedStates++
-	solver.greedy = greedy
 	return solver
 }
 
@@ -55,7 +56,7 @@ func hasSeen(state gridState) bool {
 ** return value: error e (unsolvable)
  */
 
-func SolveV2(solver Solver) (e error) {
+func Solve(solver Solver) (e error) {
 		e = uniformCostSearch(solver)
 	return
 }
