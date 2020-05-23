@@ -2,7 +2,6 @@ package solver
 
 import (
 	"errors"
-	"fmt"
 )
 
 /*Solve Function:
@@ -33,12 +32,15 @@ func (solver *Solver) findState(state *gridState) int {
 
 func (solver *Solver) closeState(state *gridState) {
 	idx := solver.findState(state)
-	if idx == -1 {
-		fmt.Println("NANI?! idx -1 ? ")
-	}
 	solver.openedStates[idx] = solver.openedStates[len(solver.openedStates)-1]
 	solver.openedStates[len(solver.openedStates)-1] = nil // To remove ?
 	solver.openedStates = solver.openedStates[:len(solver.openedStates)-1]
+	for i := range state.path {
+		state.path[i].childsCount--
+		if state.path[i].childsCount == 0 {
+			counter--
+		}
+	}
 }
 
 // Solve solve
@@ -51,16 +53,19 @@ func (solver *Solver) Solve() (e error) {
 		solver.explored[curKey] = true
 		solver.totalOpenedStates++
 
+		var included int
 		for i := range nextStates {
 			if solver.explored[nextStates[i].mapKey()] == false {
 				nextStates[i].score = solver.fn(nextStates[i].grid, size, nextStates[i].depth)
-				solver.openedStates = append(solver.openedStates, &nextStates[i])
+				solver.openedStates = append(solver.openedStates, nextStates[i])
 				solver.totalStates++
+				included++
 			}
 		}
-		if len(solver.openedStates) > solver.maxStates {
-			solver.maxStates = len(solver.openedStates)
+		if counter > solver.maxStates {
+			solver.maxStates = counter
 		}
+		counter -= (len(nextStates) - included)
 		solver.closeState(cur)
 		if curKey != goalKey {
 			cur = bestScore(solver.openedStates)
@@ -69,7 +74,6 @@ func (solver *Solver) Solve() (e error) {
 	if len(solver.openedStates) == 0 {
 		return errors.New("Error: pupu not solvable(empty open states)")
 	}
-	solver.Solution = make([]*gridState, 1)
-	solver.Solution[0] = cur //// TODO
+	solver.Solution = append(cur.path, cur)
 	return
 }

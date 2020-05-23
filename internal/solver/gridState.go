@@ -6,10 +6,11 @@ import (
 
 // gridState type: grid format/interface
 type gridState struct {
-	grid  []int
-	depth int
-	score float32
-	path  []*gridState
+	grid        []int
+	depth       int
+	score       float32
+	path        []*gridState
+	childsCount int
 }
 
 func (state *gridState) getVal(x, y int) int {
@@ -20,18 +21,22 @@ func (state *gridState) setVal(x, y, value int) {
 	state.grid[x*size+y] = value
 }
 
-func (state *gridState) generateState(xZero, yZero, xTarget, yTarget int) gridState {
-	var newState gridState
+func (state *gridState) generateState(xZero, yZero, xTarget, yTarget int) *gridState {
+	newPath := make([]*gridState, len(state.path), len(state.path)+1)
+	copy(newPath, state.path)
+	newPath = append(newPath, state)
+	newState := newGrid(newPath)
+	newState.path = append(state.path, state)
 	newState.grid = make([]int, len(state.grid))
 	copy(newState.grid, state.grid)
 	newState.depth = state.depth + 1
 	newState.setVal(xZero, yZero, state.getVal(xTarget, yTarget))
 	newState.setVal(xTarget, yTarget, 0)
-	return newState
+	return &newState
 }
 
-func (state *gridState) generateNextStates() []gridState {
-	ret := make([]gridState, 0, 4)
+func (state *gridState) generateNextStates() []*gridState {
+	ret := make([]*gridState, 0, 4)
 	idx := -1
 	for i, nb := range state.grid {
 		if nb == 0 {
@@ -93,4 +98,16 @@ func (state gridState) mapKey() string {
 	}
 
 	return s
+}
+
+// NewGrid creates a new gridState and manage the states counter
+func newGrid(path []*gridState) gridState {
+	for i := range path {
+		path[i].childsCount++
+	}
+	counter++
+	var n gridState
+	n.path = make([]*gridState, len(path))
+	copy(n.path, path)
+	return n
 }

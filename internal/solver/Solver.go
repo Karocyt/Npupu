@@ -7,6 +7,7 @@ type scoreFn func([]int, int, int) float32
 
 var size int
 var goalKey string
+var counter int
 
 // Solver contains all variables required to solve the grid
 // Solver.Solution contains ordered states from the starting grid to the solved one
@@ -30,16 +31,16 @@ func New(grid []int, gridSize int, fn scoreFn) Solver {
 		explored:          make(map[string]bool, 100*size*size),
 		totalOpenedStates: 0,
 		totalStates:       1,
-		maxStates:         1,
+		maxStates:         0,
 	}
 
 	size = gridSize
 	goalKey = makeGoalKey(size)
-	state := gridState{
-		grid:  grid,
-		depth: 1,
-		score: fn(grid, gridSize, 1),
-	}
+	state := newGrid(nil)
+	state.path = make([]*gridState, 0)
+	state.grid = grid
+	state.depth = 1
+	state.score = fn(grid, gridSize, 1)
 
 	solver.openedStates = append(solver.openedStates, &state)
 
