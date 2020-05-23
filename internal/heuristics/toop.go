@@ -19,3 +19,7 @@ func toop(grid []int, size int, depth int) float32 {
 	}
 	return score
 }
+
+func toopA(grid []int, size int, depth int) float32 {
+	return toop(grid, size, depth) + float32(depth)
+}
