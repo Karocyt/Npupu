@@ -9,7 +9,7 @@ func tScore(puzzle []int, nb int, x int, y int, size int) float32 {
 }
 
 // Tiles out-of place
-func toop(grid []int, size int) float32 {
+func toop(grid []int, size int, depth int) float32 {
 	var score float32
 	puzzle, _ := makeGoal(size)
 	for x := 0; x < size; x++ {

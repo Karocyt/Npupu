@@ -7,8 +7,8 @@ import (
 
 	"github.com/Karocyt/Npupu/internal/heuristics"
 	"github.com/Karocyt/Npupu/internal/parser"
-//	"github.com/Karocyt/Npupu/internal/solver"
-	"github.com/Karocyt/Npupu/internal/solverv2"
+	"github.com/Karocyt/Npupu/internal/solver"
+
 )
 
 func printError(e error) {
@@ -44,8 +44,8 @@ func mainfunc() int {
 	tmp, size, h, e := parser.Parse(len(heuristics.Functions))
 	printError(e)
 	for _, currH := range h {
-		s := solverv2.New(tmp, size, heuristics.Functions[currH].Fn, heuristics.Functions[currH].Greedy)
-		e = solverv2.Solve(s)
+		s := solver.New(tmp, size, heuristics.Functions[currH].Fn, heuristics.Functions[currH].Greedy)
+		e = s.Solve()
 		printError(e)
 		printSolution(heuristics.Functions[currH].Name)
 	}
