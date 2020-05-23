@@ -24,14 +24,6 @@ func printError(e error) {
 	os.Exit(1)
 }
 
-func printSolution(name string) {
-	fmt.Printf("Solution using %s:\n\n", name)
-	/*	for _, step := range s.Solution {
-			fmt.Println(step)
-		}
-		s.PrintStats() */
-}
-
 func validateArgs() {
 	if len(os.Args) < 2 {
 		printError(errors.New("Please provide a file to open"))
@@ -46,7 +38,7 @@ func mainfunc() int {
 		s := solver.New(tmp, size, heuristics.Functions[currH].Fn)
 		e = s.Solve()
 		printError(e)
-		printSolution(heuristics.Functions[currH].Name)
+		s.PrintRes(heuristics.Functions[currH].Name)
 	}
 
 	return (0)

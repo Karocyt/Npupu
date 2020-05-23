@@ -49,19 +49,20 @@ func (solver *Solver) Solve() (e error) {
 		curKey = cur.mapKey()
 		nextStates := cur.generateNextStates()
 		solver.explored[curKey] = true
+		solver.totalOpenedStates++
 
 		for i := range nextStates {
 			if solver.explored[nextStates[i].mapKey()] == false {
 				nextStates[i].score = solver.fn(nextStates[i].grid, size, nextStates[i].depth)
 				solver.openedStates = append(solver.openedStates, &nextStates[i])
+				solver.totalStates++
 			}
 		}
+		if len(solver.openedStates) > solver.maxStates {
+			solver.maxStates = len(solver.openedStates)
+		}
 		solver.closeState(cur)
-		cur = bestScore(solver.openedStates)
-		var tmp *gridState
-		for tmp != cur && cur.score == 0 {
-			cur.score = solver.fn(cur.grid, size, cur.depth)
-			tmp = cur
+		if curKey != goalKey {
 			cur = bestScore(solver.openedStates)
 		}
 	}
@@ -69,7 +70,6 @@ func (solver *Solver) Solve() (e error) {
 		return errors.New("Error: pupu not solvable(empty open states)")
 	}
 	solver.Solution = make([]*gridState, 1)
-	solver.Solution[0] = cur
-	fmt.Println(cur)
+	solver.Solution[0] = cur //// TODO
 	return
 }

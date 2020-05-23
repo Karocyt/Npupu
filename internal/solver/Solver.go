@@ -1,5 +1,7 @@
 package solver
 
+import "fmt"
+
 // scoreFn type: heuristic functions prototype
 type scoreFn func([]int, int, int) float32
 
@@ -9,13 +11,14 @@ var goalKey string
 // Solver contains all variables required to solve the grid
 // Solver.Solution contains ordered states from the starting grid to the solved one
 type Solver struct {
-	openedStates    []*gridState
-	Solution        []*gridState
-	fn              scoreFn
-	explored        map[string]bool
-	maxOpenedStates int
-	totalStates     int
-	depth           int
+	openedStates      []*gridState
+	Solution          []*gridState
+	fn                scoreFn
+	explored          map[string]bool
+	maxStates         int
+	totalOpenedStates int
+	totalStates       int
+	depth             int
 }
 
 // New initialize a new solverStruct, required to disciminate variables in multi-solving
@@ -23,9 +26,11 @@ type Solver struct {
 // (we can use "var s Solver.Solver" in main instead of calling this)
 func New(grid []int, gridSize int, fn scoreFn) Solver {
 	solver := Solver{
-		totalStates: 1,
-		fn:          fn,
-		explored:    make(map[string]bool, 100*size*size),
+		fn:                fn,
+		explored:          make(map[string]bool, 100*size*size),
+		totalOpenedStates: 0,
+		totalStates:       1,
+		maxStates:         1,
 	}
 
 	size = gridSize
@@ -48,7 +53,9 @@ func (solver *Solver) hasSeen(state gridState) bool {
 
 // PrintStats does exactly what it says
 func (solver *Solver) PrintStats() {
-	/* TODO */
+	fmt.Printf("Total states analyzed: %d\n", solver.totalStates)
+	fmt.Printf("Total states selected: %d\n", solver.totalOpenedStates)
+	fmt.Printf("Maximum states ever represented at once: %d\n", solver.maxStates)
 }
 
 func makeGoalKey(s int) string {
@@ -80,4 +87,13 @@ func makeGoalKey(s int) string {
 		grid: puzzle,
 	}
 	return grid.mapKey()
+}
+
+// PrintRes prints.
+func (solver *Solver) PrintRes(name string) {
+	fmt.Printf("Solution using %s:\n\n", name)
+	for _, step := range solver.Solution {
+		fmt.Println(step)
+	}
+	solver.PrintStats()
 }

@@ -6,10 +6,10 @@ import (
 
 // gridState type: grid format/interface
 type gridState struct {
-	grid	[]int
-	depth	int
-	score	float32
-	path	[]*gridState
+	grid  []int
+	depth int
+	score float32
+	path  []*gridState
 }
 
 func (state *gridState) getVal(x, y int) int {
