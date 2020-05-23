@@ -44,10 +44,11 @@ func (solver *Solver) closeState(state *gridState) {
 // Solve solve
 func (solver *Solver) Solve() (e error) {
 	cur := solver.openedStates[0]
-	for cur != nil && cur.score != 0 {
+	curKey := cur.mapKey()
+	for cur != nil && curKey != goalKey {
+		curKey = cur.mapKey()
 		nextStates := cur.generateNextStates()
-		solver.explored[cur.mapKey()] = true
-		//fmt.Println(cur)
+		solver.explored[curKey] = true
 
 		for i := range nextStates {
 			if solver.explored[nextStates[i].mapKey()] == false {
@@ -55,11 +56,7 @@ func (solver *Solver) Solve() (e error) {
 				solver.openedStates = append(solver.openedStates, &nextStates[i])
 			}
 		}
-		//fmt.Println("\n\n\nBefore:", solver.openedStates)
 		solver.closeState(cur)
-		//fmt.Println("After:", solver.openedStates)
-
-		//fmt.Println("opened:", solver.openedStates)
 		cur = bestScore(solver.openedStates)
 		var tmp *gridState
 		for tmp != cur && cur.score == 0 {

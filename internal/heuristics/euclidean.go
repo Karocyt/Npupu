@@ -26,3 +26,7 @@ func euclidean(grid []int, size int, depth int) float32 {
 	}
 	return score
 }
+
+func euclideanA(grid []int, size int, depth int) float32 {
+	return euclidean(grid, size, depth) + float32(depth)
+}

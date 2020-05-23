@@ -17,3 +17,7 @@ func manhattan(grid []int, size int, depth int) float32 {
 	}
 	return score
 }
+
+func manhattanA(grid []int, size int, depth int) float32 {
+	return manhattan(grid, size, depth) + float32(depth)
+}
