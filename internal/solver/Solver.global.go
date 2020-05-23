@@ -25,7 +25,6 @@ func bestScore(l []*gridState) (cur *gridState) {
 func (solver *Solver) findState(state *gridState) int {
 	for i, find := range solver.openedStates {
 		if find == state {
-			fmt.Printf("find: %p, state: %p\n", find, state)
 			return i
 		}
 	}
@@ -56,9 +55,9 @@ func (solver *Solver) Solve() (e error) {
 				solver.openedStates = append(solver.openedStates, &nextStates[i])
 			}
 		}
-		fmt.Println("\n\n\nBefore:", solver.openedStates)
+		//fmt.Println("\n\n\nBefore:", solver.openedStates)
 		solver.closeState(cur)
-		fmt.Println("After:", solver.openedStates)
+		//fmt.Println("After:", solver.openedStates)
 
 		//fmt.Println("opened:", solver.openedStates)
 		cur = bestScore(solver.openedStates)

@@ -4,7 +4,7 @@ import (
 	"math"
 )
 
-func eScore(nb int, x int, y int, size int ) float32 {
+func eScore(nb int, x int, y int, size int) float32 {
 	tmp := nbPos[nb]
 	x1 := tmp[0]
 	y1 := tmp[1]

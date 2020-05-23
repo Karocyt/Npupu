@@ -20,21 +20,20 @@ func isValid(str string) bool {
 	return true
 }
 
-func read() (pupu []int, size int,  e error) {
-//	var e error
-//	var pupu []int
-//	var size int
+func read() (pupu []int, size int, e error) {
+	//	var e error
+	//	var pupu []int
+	//	var size int
 
 	file, e := os.Open(os.Args[1])
 
 	if e != nil {
-		e = errors.New("failed opening file:" )
+		e = errors.New("failed opening file:")
 		return
 	}
 
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanLines)
-
 
 	for scanner.Scan() {
 		tmp := strings.TrimSpace(scanner.Text())
@@ -42,7 +41,7 @@ func read() (pupu []int, size int,  e error) {
 			tmp := strings.Split(tmp, "#")
 			size, e = strconv.Atoi(tmp[0])
 			if e != nil {
-				e = errors.New("bad size number" )
+				e = errors.New("bad size number")
 				return
 			}
 			break
@@ -54,39 +53,54 @@ func read() (pupu []int, size int,  e error) {
 	for scanner.Scan() {
 		tmp := strings.TrimSpace(scanner.Text())
 
-		if tmp == "" {continue}
-		if tmp[0] == '#' {continue}
-		if len(tmp) > 0 && tmp[0] != '#' {
-			tmp := strings.Split(tmp, "#")
-			if tmp[0][0] == '#' {continue}
-			tmp[0] = strings.TrimSpace(tmp[0])
-			tmp = strings.Split(tmp[0], " ")
-			for i := 0; i < size; i++ {
-				if len(tmp) != size {
-					fmt.Println(tmp, len(tmp))
-					e = errors.New("bad size line")
-					return
-				}
-				pupu[x*size+i], _ = strconv.Atoi(tmp[i])
+		if tmp == "" || tmp[0] == '#' {
+			continue
+		}
+		idx := len(tmp)
+		for i, c := range tmp {
+			if c == '#' {
+				idx = i
+			}
+		}
+		tmp = tmp[0:idx]
+
+		tmpTab := strings.Split(tmp, " ")
+		tab := make([]string, 0, size)
+		for _, elem := range tmpTab {
+			if elem != "" {
+				tab = append(tab, elem)
+			}
+		}
+
+		for i := 0; i < size; i++ {
+			if len(tab) != size {
+				fmt.Println(tab, len(tab))
+				e = errors.New("bad size line")
+				return
+			}
+			if len(pupu) > x*size+i {
+				pupu[x*size+i], e = strconv.Atoi(tab[i])
+			}
+			if e != nil {
+				return
 			}
 		}
 		x++
 	}
 	file.Close()
-	e = check_pupu(pupu, size  * size)
-	if e != nil  {
+	e = checkPupu(pupu, size*size)
+	if e != nil {
 		return
 	}
 	return
 }
 
-
-
-
 // Parse function: Only exported function
 func Parse(heuristicsCount int) (pupu []int, size int, heuristics []int, e error) {
 	pupu, size, e = read()
-	if e != nil { return }
+	if e != nil {
+		return
+	}
 	heuristics = []int{}
 	for i := 2; i < len(os.Args); i++ {
 		var h int
