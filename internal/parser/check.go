@@ -12,6 +12,9 @@ func checkPupu(pupu []int, max int) (e error) {
 	copy(tmp, pupu)
 	sort.Ints(tmp)
 	for i := 0; i < len(pupu)-1; i++ {
+		if tmp[i] < 0 {
+			return errors.New("please don't use negative number")
+		}
 		if tmp[i] == tmp[i+1] {
 			return errors.New("duplicate number")
 		}
