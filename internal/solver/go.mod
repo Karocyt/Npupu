@@ -1,4 +1,4 @@
-module github.com/Karocyt/Npupu/internal/solver
+module solver
 
 replace github.com/wangjia184/sortedset => ../vendor/sortedset
 

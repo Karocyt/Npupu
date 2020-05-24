@@ -1,3 +1,3 @@
-module github.com/Karocyt/Npupu/internal/parser
+module parser
 
 go 1.14

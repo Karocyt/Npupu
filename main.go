@@ -24,10 +24,13 @@ func printError(e error) {
 	os.Exit(1)
 }
 
-func validateArgs() {
+func validateArgs() (e error) {
 	if len(os.Args) < 2 {
 		printError(errors.New("Please provide a file to open"))
+	} else if len(os.Args) > 4 {
+		printError(errors.New("Too Many arguments"))
 	}
+	return
 }
 
 func main() {
