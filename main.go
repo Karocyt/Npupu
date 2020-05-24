@@ -34,11 +34,19 @@ func mainfunc() int {
 	validateArgs()
 	tmp, size, h, e := parser.Parse(len(heuristics.Functions))
 	printError(e)
+	solvers := make([]solver.Solver, 0, 1)
 	for _, currH := range h {
-		s := solver.New(tmp, size, heuristics.Functions[currH].Fn)
-		e = s.Solve()
-		printError(e)
-		s.PrintRes(heuristics.Functions[currH].Name)
+		solvers = append(solvers, solver.New(tmp, size, heuristics.Functions[currH].Fn))
+		go solvers[len(solvers)-1].Solve()
+	}
+
+	for i := range solvers {
+		res := <-solvers[i].Solution
+		if res.E != nil {
+			fmt.Println(res.E)
+		} else {
+			solvers[i].PrintRes(heuristics.Functions[h[i]].Name, res.Solution)
+		}
 	}
 
 	return (0)

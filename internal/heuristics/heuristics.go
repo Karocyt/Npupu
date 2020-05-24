@@ -2,8 +2,6 @@ package heuristics
 
 // all heuristic functions should be of type func([]int) string
 
-var nbPos map[int][2]int
-
 type heuristicFn struct {
 	Fn   func(grid []int, size int, depth int) float32
 	Name string

@@ -9,17 +9,24 @@ var size int
 var goalKey string
 var counter int
 
+type result struct {
+	Solution []*gridState
+	E        error
+}
+
 // Solver contains all variables required to solve the grid
 // Solver.Solution contains ordered states from the starting grid to the solved one
 type Solver struct {
-	openedStates      []*gridState
-	Solution          []*gridState
+	openedStates []*gridState
+	//Solution          []*gridState
 	fn                scoreFn
 	explored          map[string]bool
 	maxStates         int
 	totalOpenedStates int
 	totalStates       int
 	depth             int
+	Solution          chan result
+	E                 error
 }
 
 // New initialize a new solverStruct, required to disciminate variables in multi-solving
@@ -31,7 +38,8 @@ func New(grid []int, gridSize int, fn scoreFn) Solver {
 		explored:          make(map[string]bool, 100*size*size),
 		totalOpenedStates: 0,
 		totalStates:       1,
-		maxStates:         0,
+		maxStates:         1,
+		Solution:          make(chan result, 1),
 	}
 
 	size = gridSize
@@ -91,9 +99,9 @@ func makeGoalKey(s int) string {
 }
 
 // PrintRes prints.
-func (solver *Solver) PrintRes(name string) {
+func (solver *Solver) PrintRes(name string, solution []*gridState) {
 	fmt.Printf("Solution using %s:\n\n", name)
-	for _, step := range solver.Solution {
+	for _, step := range solution {
 		fmt.Println(step)
 	}
 	solver.PrintStats()

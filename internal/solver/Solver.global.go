@@ -4,14 +4,6 @@ import (
 	"errors"
 )
 
-/*Solve Function:
-** Solves solver.openedStates given puzzle with A* algorithm.
-** 	- 1st argument: solver.openedStates grid in the format [N*N]int
-** 	- 2nd argument: size N of the aforementioned grid
-** 	- 3rd argument: score function of type 'func([]int) int' used as heuristic
-** return value: error e (unsolvable)
- */
-
 func bestScore(l []*gridState) (cur *gridState) {
 	for _, item := range l {
 		if cur == nil || item.score < cur.score {
@@ -44,7 +36,7 @@ func (solver *Solver) closeState(state *gridState) {
 }
 
 // Solve solve
-func (solver *Solver) Solve() (e error) {
+func (solver *Solver) Solve() {
 	cur := solver.openedStates[0]
 	curKey := cur.mapKey()
 	for cur != nil && curKey != goalKey {
@@ -72,8 +64,10 @@ func (solver *Solver) Solve() (e error) {
 		}
 	}
 	if len(solver.openedStates) == 0 {
-		return errors.New("Error: pupu not solvable(empty open states)")
+		solver.E = errors.New("Error: pupu not solvable(empty open states)")
+		solver.Solution <- result{nil, solver.E}
+	} else {
+		solver.Solution <- result{append(cur.path, cur), nil}
 	}
-	solver.Solution = append(cur.path, cur)
 	return
 }

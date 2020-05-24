@@ -4,7 +4,7 @@ import (
 	"math"
 )
 
-func eScore(nb int, x int, y int, size int) float32 {
+func eScore(nb int, x int, y int, size int, nbPos map[int][2]int) float32 {
 	tmp := nbPos[nb]
 	x1 := tmp[0]
 	y1 := tmp[1]
@@ -18,10 +18,10 @@ func eScore(nb int, x int, y int, size int) float32 {
 // euclidean distance function: other basic heuristic
 func euclidean(grid []int, size int, depth int) float32 {
 	var score float32
-	_, nbPos = makeGoal(size)
+	_, nbPos := makeGoal(size)
 	for x := 0; x < size; x++ {
 		for y := 0; y < size; y++ {
-			score += eScore(grid[get1d(x, y, size)], x, y, size)
+			score += eScore(grid[get1d(x, y, size)], x, y, size, nbPos)
 		}
 	}
 	return score

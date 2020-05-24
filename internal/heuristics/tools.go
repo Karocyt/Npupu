@@ -19,7 +19,7 @@ func get2d(nb int, size int) (int, int) {
 }
 
 func makeGoal(s int) ([]int, map[int][2]int) {
-	nbPos = make(map[int][2]int)
+	nbPos := make(map[int][2]int)
 	puzzle := make([]int, s*s)
 	cur := 1
 	x := 0
