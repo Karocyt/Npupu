@@ -1,5 +1,7 @@
 package solver
 
+import "time"
+
 func bestScore(l []*gridState) (cur *gridState) {
 	for _, item := range l {
 		if cur == nil || item.score < cur.score {
@@ -20,6 +22,7 @@ func (solver *Solver) decrementParents(state *gridState) {
 
 // Solve solve
 func (solver *Solver) Solve() {
+	solver.startTime = time.Now()
 	cur := solver.openedStates.PopMin().Value.(*gridState)
 	curKey := cur.mapKey()
 	for cur != nil && curKey != goalKey {
@@ -56,6 +59,7 @@ func (solver *Solver) Solve() {
 	} else {
 		solver.Solution <- append(cur.path, cur)
 	}
+	solver.totalTime = time.Since(solver.startTime)
 	solver.Stats <- solver.counters
 	return
 }

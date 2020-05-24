@@ -2,6 +2,7 @@ package solver
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/wangjia184/sortedset"
 )
@@ -17,6 +18,8 @@ type counters struct {
 	maxStates         int
 	totalOpenedStates int
 	totalStates       int
+	startTime         time.Time
+	totalTime         time.Duration
 }
 
 // Solver contains all variables required to solve the grid
@@ -73,6 +76,7 @@ func (solver *Solver) hasSeen(state gridState) bool {
 
 // PrintStats does exactly what it says
 func PrintStats(stats counters) {
+	fmt.Println("Total time elapsed:", stats.totalTime)
 	fmt.Printf("Total states analyzed: %d\n", stats.totalStates)
 	fmt.Printf("Total states selected: %d\n", stats.totalOpenedStates)
 	fmt.Printf("Maximum states ever represented at once: %d\n\n", stats.maxStates)
@@ -123,6 +127,6 @@ func (solver *Solver) PrintRes(name string, solution []*gridState, ok bool, stat
 }
 
 // AppendState prout
-func (solver *Solver) AppendState(state *gridState) {
-	solver.openedStates.AddOrUpdate(state.mapKey(), sortedset.SCORE(state.score), state)
+func (solver *Solver) AppendState(state *gridState) bool {
+	return solver.openedStates.AddOrUpdate(state.mapKey(), sortedset.SCORE(state.score), state)
 }
