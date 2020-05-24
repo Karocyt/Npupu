@@ -9,10 +9,10 @@ func mScore(nb int, x int, y int, size int, nbPos map[int][2]int) float32 {
 
 func manhattan(grid []int, size int, depth int) float32 {
 	var score float32
-	_, nbPos := makeGoal(size)
+	_, nbPos := MakeGoal(size)
 	for x := 0; x < size; x++ {
 		for y := 0; y < size; y++ {
-			score += mScore(grid[get1d(x, y, size)], x, y, size, nbPos)
+			score += mScore(grid[Get1d(x, y, size)], x, y, size, nbPos)
 		}
 	}
 	return score

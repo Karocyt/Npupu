@@ -6,8 +6,14 @@ func abs(nb int) int {
 	}
 	return nb
 }
+/*
+func GetNInv (nb int, size int) int {
+	x, y := get2d(nb, size)
+	return
+}
+*/
 
-func get1d(x int, y int, size int) int {
+func Get1d(x int, y int, size int) int {
 	return x*size + y
 }
 
@@ -18,7 +24,7 @@ func get2d(nb int, size int) (int, int) {
 	return x, y
 }
 
-func makeGoal(s int) ([]int, map[int][2]int) {
+func MakeGoal(s int) ([]int, map[int][2]int) {
 	nbPos := make(map[int][2]int)
 	puzzle := make([]int, s*s)
 	cur := 1

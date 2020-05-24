@@ -28,12 +28,12 @@ func read() (pupu []int, size int, e error) {
 		return
 	}
 	if fileInfo.IsDir() {
-		e = errors.New("filename is a directory:" + filename)
+		e = errors.New("filename is a directory: " + filename)
 		return
 	}
 	file, e := os.OpenFile(filename, os.O_RDONLY, 444)
 	if e != nil {
-		e = errors.New("failed opening file:" + filename)
+		e = errors.New("failed opening file: " + filename)
 		return
 	}
 
@@ -103,6 +103,11 @@ func read() (pupu []int, size int, e error) {
 // Parse function: Only exported function
 func Parse(heuristicsCount int) (pupu []int, size int, heuristics []int, e error) {
 	pupu, size, e = read()
+
+	if e == nil && !checkSolvy(pupu, size) {
+		fmt.Println("Pupu is not solvable :3")
+		os.Exit(0)
+	}
 	if e != nil {
 		return
 	}
