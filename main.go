@@ -30,11 +30,12 @@ func validateArgs() {
 	}
 }
 
-func mainfunc() int {
+func main() {
 	validateArgs()
 	tmp, size, h, e := parser.Parse(len(heuristics.Functions))
 	printError(e)
-	solvers := make([]solver.Solver, 0, 1)
+	solvers := make([]solver.Solver, 0, 2)
+	solver.Init(size)
 	for _, currH := range h {
 		solvers = append(solvers, solver.New(tmp, size, heuristics.Functions[currH].Fn))
 		go solvers[len(solvers)-1].Solve()
@@ -45,10 +46,5 @@ func mainfunc() int {
 		stats := <-solvers[i].Stats
 		solvers[i].PrintRes(heuristics.Functions[h[i]].Name, res, ok, stats)
 	}
-
-	return (0)
-}
-
-func main() {
-	os.Exit(mainfunc())
+	os.Exit(0)
 }

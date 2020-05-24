@@ -33,6 +33,12 @@ type Solver struct {
 	Stats        chan counters
 }
 
+// Init initialize globals
+func Init(gridSize int) {
+	size = gridSize
+	goalKey = makeGoalKey(size)
+}
+
 // New initialize a new solverStruct, required to disciminate variables in multi-solving
 // Can be removed if we don't need to initialize anything
 // (we can use "var s Solver.Solver" in main instead of calling this)
@@ -50,8 +56,6 @@ func New(grid []int, gridSize int, fn scoreFn) Solver {
 		Stats:        make(chan counters, 1),
 	}
 
-	size = gridSize
-	goalKey = makeGoalKey(size)
 	state := newGrid(nil, &solver.counter)
 	state.path = make([]*gridState, 0)
 	state.grid = grid
