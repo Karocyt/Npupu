@@ -28,12 +28,12 @@ func read() (pupu []int, size int, e error) {
 		return
 	}
 	if fileInfo.IsDir() {
-		e = errors.New("filename is a directory")
+		e = errors.New("filename is a directory:" + filename)
 		return
 	}
 	file, e := os.OpenFile(filename, os.O_RDONLY, 444)
 	if e != nil {
-		e = errors.New("failed opening file:")
+		e = errors.New("failed opening file:" + filename)
 		return
 	}
 
