@@ -21,11 +21,9 @@ func isValid(str string) bool {
 }
 
 func read() (pupu []int, size int, e error) {
-	//	var e error
-	//	var pupu []int
-	//	var size int
+	filename := os.Args[1]
 
-	fileInfo, e := os.Stat(os.Args[1])
+	fileInfo, e := os.Stat(filename)
 	if e != nil{
 		return
 	}
@@ -33,7 +31,7 @@ func read() (pupu []int, size int, e error) {
 		e = errors.New("filename is a directory")
 		return
 	}
-	file, e := os.Open(os.Args[1])
+	file, e := os.OpenFile(filename, os.O_RDONLY, 444)
 	if e != nil {
 		e = errors.New("failed opening file:")
 		return
