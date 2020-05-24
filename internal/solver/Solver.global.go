@@ -40,7 +40,7 @@ func (solver *Solver) Solve() {
 		if solver.counter > solver.maxStates {
 			solver.maxStates = solver.counter
 		}
-		solver.counter -= (len(nextStates) - included)
+		solver.counter -= (len(nextStates) - included + 1)
 		solver.decrementParents(cur)
 		if curKey != goalKey {
 			tmp := solver.openedStates.PopMin()
