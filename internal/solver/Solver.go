@@ -7,26 +7,25 @@ type scoreFn func([]int, int, int) float32
 
 var size int
 var goalKey string
-var counter int
 
-type result struct {
-	Solution []*gridState
-	E        error
+type counters struct {
+	counter           int
+	maxStates         int
+	totalOpenedStates int
+	totalStates       int
 }
 
 // Solver contains all variables required to solve the grid
 // Solver.Solution contains ordered states from the starting grid to the solved one
 type Solver struct {
+	counters
 	openedStates []*gridState
-	//Solution          []*gridState
-	fn                scoreFn
-	explored          map[string]bool
-	maxStates         int
-	totalOpenedStates int
-	totalStates       int
-	depth             int
-	Solution          chan result
-	E                 error
+	fn           scoreFn
+	explored     map[string]bool
+	depth        int
+	Solution     chan []*gridState
+	E            error
+	Stats        chan counters
 }
 
 // New initialize a new solverStruct, required to disciminate variables in multi-solving
@@ -34,17 +33,20 @@ type Solver struct {
 // (we can use "var s Solver.Solver" in main instead of calling this)
 func New(grid []int, gridSize int, fn scoreFn) Solver {
 	solver := Solver{
-		fn:                fn,
-		explored:          make(map[string]bool, 100*size*size),
-		totalOpenedStates: 0,
-		totalStates:       1,
-		maxStates:         1,
-		Solution:          make(chan result, 1),
+		counters: counters{
+			totalOpenedStates: 0,
+			totalStates:       1,
+			maxStates:         1,
+		},
+		fn:       fn,
+		explored: make(map[string]bool, 100*size*size),
+		Solution: make(chan []*gridState, 1),
+		Stats:    make(chan counters, 1),
 	}
 
 	size = gridSize
 	goalKey = makeGoalKey(size)
-	state := newGrid(nil)
+	state := newGrid(nil, &solver.counter)
 	state.path = make([]*gridState, 0)
 	state.grid = grid
 	state.depth = 1
@@ -61,10 +63,10 @@ func (solver *Solver) hasSeen(state gridState) bool {
 }
 
 // PrintStats does exactly what it says
-func (solver *Solver) PrintStats() {
-	fmt.Printf("Total states analyzed: %d\n", solver.totalStates)
-	fmt.Printf("Total states selected: %d\n", solver.totalOpenedStates)
-	fmt.Printf("Maximum states ever represented at once: %d\n", solver.maxStates)
+func PrintStats(stats counters) {
+	fmt.Printf("Total states analyzed: %d\n", stats.totalStates)
+	fmt.Printf("Total states selected: %d\n", stats.totalOpenedStates)
+	fmt.Printf("Maximum states ever represented at once: %d\n\n", stats.maxStates)
 }
 
 func makeGoalKey(s int) string {
@@ -99,10 +101,14 @@ func makeGoalKey(s int) string {
 }
 
 // PrintRes prints.
-func (solver *Solver) PrintRes(name string, solution []*gridState) {
+func (solver *Solver) PrintRes(name string, solution []*gridState, ok bool, stats counters) {
 	fmt.Printf("Solution using %s:\n\n", name)
-	for _, step := range solution {
-		fmt.Println(step)
+	if ok {
+		for _, step := range solution {
+			fmt.Println(step)
+		}
+	} else {
+		fmt.Println("This puzzle is not solvable.")
 	}
-	solver.PrintStats()
+	PrintStats(stats)
 }

@@ -41,12 +41,9 @@ func mainfunc() int {
 	}
 
 	for i := range solvers {
-		res := <-solvers[i].Solution
-		if res.E != nil {
-			fmt.Println(res.E)
-		} else {
-			solvers[i].PrintRes(heuristics.Functions[h[i]].Name, res.Solution)
-		}
+		res, ok := <-solvers[i].Solution
+		stats := <-solvers[i].Stats
+		solvers[i].PrintRes(heuristics.Functions[h[i]].Name, res, ok, stats)
 	}
 
 	return (0)

@@ -1,9 +1,5 @@
 package solver
 
-import (
-	"errors"
-)
-
 func bestScore(l []*gridState) (cur *gridState) {
 	for _, item := range l {
 		if cur == nil || item.score < cur.score {
@@ -30,7 +26,7 @@ func (solver *Solver) closeState(state *gridState) {
 	for i := range state.path {
 		state.path[i].childsCount--
 		if state.path[i].childsCount == 0 {
-			counter--
+			solver.counter--
 		}
 	}
 }
@@ -41,7 +37,7 @@ func (solver *Solver) Solve() {
 	curKey := cur.mapKey()
 	for cur != nil && curKey != goalKey {
 		curKey = cur.mapKey()
-		nextStates := cur.generateNextStates()
+		nextStates := cur.generateNextStates(&solver.counter)
 		solver.explored[curKey] = true
 		solver.totalOpenedStates++
 
@@ -54,20 +50,20 @@ func (solver *Solver) Solve() {
 				included++
 			}
 		}
-		if counter > solver.maxStates {
-			solver.maxStates = counter
+		if solver.counter > solver.maxStates {
+			solver.maxStates = solver.counter
 		}
-		counter -= (len(nextStates) - included)
+		solver.counter -= (len(nextStates) - included)
 		solver.closeState(cur)
 		if curKey != goalKey {
 			cur = bestScore(solver.openedStates)
 		}
 	}
 	if len(solver.openedStates) == 0 {
-		solver.E = errors.New("Error: pupu not solvable(empty open states)")
-		solver.Solution <- result{nil, solver.E}
+		close(solver.Solution)
 	} else {
-		solver.Solution <- result{append(cur.path, cur), nil}
+		solver.Solution <- append(cur.path, cur)
 	}
+	solver.Stats <- solver.counters
 	return
 }

@@ -21,11 +21,11 @@ func (state *gridState) setVal(x, y, value int) {
 	state.grid[x*size+y] = value
 }
 
-func (state *gridState) generateState(xZero, yZero, xTarget, yTarget int) *gridState {
+func (state *gridState) generateState(xZero, yZero, xTarget, yTarget int, counter *int) *gridState {
 	newPath := make([]*gridState, len(state.path), len(state.path)+1)
 	copy(newPath, state.path)
 	newPath = append(newPath, state)
-	newState := newGrid(newPath)
+	newState := newGrid(newPath, counter)
 	newState.path = append(state.path, state)
 	newState.grid = make([]int, len(state.grid))
 	copy(newState.grid, state.grid)
@@ -35,7 +35,7 @@ func (state *gridState) generateState(xZero, yZero, xTarget, yTarget int) *gridS
 	return &newState
 }
 
-func (state *gridState) generateNextStates() []*gridState {
+func (state *gridState) generateNextStates(counter *int) []*gridState {
 	ret := make([]*gridState, 0, 4)
 	idx := -1
 	for i, nb := range state.grid {
@@ -46,16 +46,16 @@ func (state *gridState) generateNextStates() []*gridState {
 	}
 	x, y := idx/size, idx%size
 	if x > 0 {
-		ret = append(ret, state.generateState(x, y, x-1, y))
+		ret = append(ret, state.generateState(x, y, x-1, y, counter))
 	}
 	if x < size-1 {
-		ret = append(ret, state.generateState(x, y, x+1, y))
+		ret = append(ret, state.generateState(x, y, x+1, y, counter))
 	}
 	if y > 0 {
-		ret = append(ret, state.generateState(x, y, x, y-1))
+		ret = append(ret, state.generateState(x, y, x, y-1, counter))
 	}
 	if y < size-1 {
-		ret = append(ret, state.generateState(x, y, x, y+1))
+		ret = append(ret, state.generateState(x, y, x, y+1, counter))
 	}
 	return ret
 }
@@ -101,11 +101,11 @@ func (state gridState) mapKey() string {
 }
 
 // NewGrid creates a new gridState and manage the states counter
-func newGrid(path []*gridState) gridState {
+func newGrid(path []*gridState, counter *int) gridState {
 	for i := range path {
 		path[i].childsCount++
 	}
-	counter++
+	(*counter)++
 	var n gridState
 	n.path = make([]*gridState, len(path))
 	copy(n.path, path)
