@@ -1,6 +1,10 @@
 package solver
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/wangjia184/sortedset"
+)
 
 // scoreFn type: heuristic functions prototype
 type scoreFn func([]int, int, int) float32
@@ -19,7 +23,8 @@ type counters struct {
 // Solver.Solution contains ordered states from the starting grid to the solved one
 type Solver struct {
 	counters
-	openedStates []*gridState
+	//openedStates []*gridState
+	openedStates *sortedset.SortedSet
 	fn           scoreFn
 	explored     map[string]bool
 	depth        int
@@ -38,10 +43,11 @@ func New(grid []int, gridSize int, fn scoreFn) Solver {
 			totalStates:       1,
 			maxStates:         1,
 		},
-		fn:       fn,
-		explored: make(map[string]bool, 100*size*size),
-		Solution: make(chan []*gridState, 1),
-		Stats:    make(chan counters, 1),
+		fn:           fn,
+		openedStates: sortedset.New(),
+		explored:     make(map[string]bool, 100*size*size),
+		Solution:     make(chan []*gridState, 1),
+		Stats:        make(chan counters, 1),
 	}
 
 	size = gridSize
@@ -52,8 +58,7 @@ func New(grid []int, gridSize int, fn scoreFn) Solver {
 	state.depth = 1
 	state.score = fn(grid, gridSize, 1)
 
-	solver.openedStates = append(solver.openedStates, &state)
-
+	solver.AppendState(&state)
 	return solver
 }
 
@@ -111,4 +116,9 @@ func (solver *Solver) PrintRes(name string, solution []*gridState, ok bool, stat
 		fmt.Println("This puzzle is not solvable.")
 	}
 	PrintStats(stats)
+}
+
+// AppendState prout
+func (solver *Solver) AppendState(state *gridState) {
+	solver.openedStates.AddOrUpdate(state.mapKey(), sortedset.SCORE(state.score), state)
 }

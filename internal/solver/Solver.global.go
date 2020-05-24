@@ -9,20 +9,7 @@ func bestScore(l []*gridState) (cur *gridState) {
 	return cur
 }
 
-func (solver *Solver) findState(state *gridState) int {
-	for i, find := range solver.openedStates {
-		if find == state {
-			return i
-		}
-	}
-	return -1
-}
-
-func (solver *Solver) closeState(state *gridState) {
-	idx := solver.findState(state)
-	solver.openedStates[idx] = solver.openedStates[len(solver.openedStates)-1]
-	solver.openedStates[len(solver.openedStates)-1] = nil // To remove ?
-	solver.openedStates = solver.openedStates[:len(solver.openedStates)-1]
+func (solver *Solver) decrementParents(state *gridState) {
 	for i := range state.path {
 		state.path[i].childsCount--
 		if state.path[i].childsCount == 0 {
@@ -33,7 +20,7 @@ func (solver *Solver) closeState(state *gridState) {
 
 // Solve solve
 func (solver *Solver) Solve() {
-	cur := solver.openedStates[0]
+	cur := solver.openedStates.PopMin().Value.(*gridState)
 	curKey := cur.mapKey()
 	for cur != nil && curKey != goalKey {
 		curKey = cur.mapKey()
@@ -45,7 +32,7 @@ func (solver *Solver) Solve() {
 		for i := range nextStates {
 			if solver.explored[nextStates[i].mapKey()] == false {
 				nextStates[i].score = solver.fn(nextStates[i].grid, size, nextStates[i].depth)
-				solver.openedStates = append(solver.openedStates, nextStates[i])
+				solver.AppendState(nextStates[i])
 				solver.totalStates++
 				included++
 			}
@@ -54,12 +41,17 @@ func (solver *Solver) Solve() {
 			solver.maxStates = solver.counter
 		}
 		solver.counter -= (len(nextStates) - included)
-		solver.closeState(cur)
+		solver.decrementParents(cur)
 		if curKey != goalKey {
-			cur = bestScore(solver.openedStates)
+			tmp := solver.openedStates.PopMin()
+			if tmp != nil {
+				cur = tmp.Value.(*gridState)
+			} else {
+				cur = nil
+			}
 		}
 	}
-	if len(solver.openedStates) == 0 {
+	if solver.openedStates.GetCount() == 0 {
 		close(solver.Solution)
 	} else {
 		solver.Solution <- append(cur.path, cur)
