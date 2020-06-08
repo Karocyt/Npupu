@@ -88,12 +88,11 @@ func (state gridState) String() string {
 
 // mapKey Stringify function to provide keys for our visited map
 func (state gridState) mapKey() string {
-	var s string
+	s := make([]rune, size*size)
 	for i := 0; i < size*size; i++ {
-		s += string(state.grid[i]) + " "
+		s[i] = rune(state.grid[i] + 1)
 	}
-
-	return s
+	return string(s)
 }
 
 // NewGrid creates a new gridState and manage the states counter
