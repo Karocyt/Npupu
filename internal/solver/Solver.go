@@ -29,7 +29,6 @@ type Solver struct {
 	//openedStates []*gridState
 	openedStates sortedhashedtree.SortedHashedTree
 	fn           scoreFn
-	explored     map[string]bool
 	depth        int
 	Solution     chan []*gridState
 	E            error
@@ -54,7 +53,6 @@ func New(grid []int, gridSize int, fn scoreFn) Solver {
 		},
 		fn:           fn,
 		openedStates: sortedhashedtree.New(),
-		explored:     make(map[string]bool, 100*size*size),
 		Solution:     make(chan []*gridState, 1),
 		Stats:        make(chan counters, 1),
 	}
@@ -64,14 +62,10 @@ func New(grid []int, gridSize int, fn scoreFn) Solver {
 	state.grid = grid
 	state.depth = 1
 	state.score = fn(grid, gridSize, 1)
+	state.key = state.mapKey()
 
 	solver.AppendState(&state)
 	return solver
-}
-
-func (solver *Solver) hasSeen(state gridState) bool {
-	key := state.mapKey()
-	return solver.explored[key]
 }
 
 // PrintStats does exactly what it says
@@ -128,5 +122,5 @@ func (solver *Solver) PrintRes(name string, solution []*gridState, ok bool, stat
 
 // AppendState prout
 func (solver *Solver) AppendState(state *gridState) bool {
-	return solver.openedStates.Insert(state.mapKey(), state, state.score)
+	return solver.openedStates.Insert(state.key, state, state.score)
 }

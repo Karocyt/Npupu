@@ -26,19 +26,16 @@ func (solver *Solver) decrementParents(state *gridState) {
 func (solver *Solver) Solve() {
 	solver.startTime = time.Now()
 	cur := solver.openedStates.GetMin().(*gridState)
-	curKey := cur.mapKey()
 	// fmt.Println("0", cur.score)
-	for cur != nil && curKey != goalKey {
-		curKey = cur.mapKey()
+	for cur != nil && cur.key != goalKey {
 		// fmt.Printf("%p\n", cur)
 		nextStates := cur.generateNextStates(&solver.counter)
-		solver.explored[curKey] = true
 		solver.totalOpenedStates++
 
 		// fmt.Println("1 (", len(nextStates), ")")
 		var included int
 		for i := range nextStates {
-			if solver.explored[nextStates[i].mapKey()] == false {
+			if solver.openedStates.IsInHistory(nextStates[i].key) == false {
 				nextStates[i].score = solver.fn(nextStates[i].grid, size, nextStates[i].depth)
 				// fmt.Println("1.", i, nextStates[i].score)
 				//fmt.Println("/thead score:", i, solver.openedStates.GetMin().(*gridState).score)
@@ -53,10 +50,10 @@ func (solver *Solver) Solve() {
 		}
 		solver.counter -= (len(nextStates) - included + 1)
 		solver.decrementParents(cur)
-		// fmt.Println(curKey)
-		solver.openedStates.Delete(curKey)
+		// fmt.Println(cur.key)
+		solver.openedStates.Delete(cur.key)
 		// fmt.Println("3", cur.score)
-		if curKey != goalKey {
+		if cur.key != goalKey {
 			tmp := solver.openedStates.GetMin()
 			if tmp != nil {
 				cur = tmp.(*gridState)

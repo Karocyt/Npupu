@@ -21,8 +21,8 @@ func (tree SortedHashedTree) String() string {
 // New returns a new initialized SortedHashedTree
 func New() SortedHashedTree {
 	elem := SortedHashedTree{
-		dict:    map[string]*Node{},
-		history: map[string]bool{},
+		dict:    make(map[string]*Node, 1000),
+		history: make(map[string]bool, 1000),
 	}
 
 	return elem
@@ -40,6 +40,7 @@ func (tree *SortedHashedTree) Insert(key string, val interface{}, score float32)
 			parent: nil,
 		}
 		tree.dict[key] = &node
+		tree.inputsCount++
 		return tree.insertNode(&node)
 	}
 	return false
@@ -178,7 +179,11 @@ func getMin(current *Node) *Node {
 
 // GetMin gives you the element with the lowest score value
 func (tree *SortedHashedTree) GetMin() interface{} {
-	return getMin(tree.header).Value
+	ret := getMin(tree.header).Value
+	if ret != nil {
+		tree.outputsCount++
+	}
+	return ret
 }
 
 func getMax(current *Node) *Node {

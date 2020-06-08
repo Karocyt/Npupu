@@ -11,6 +11,7 @@ type gridState struct {
 	score       float32
 	path        []*gridState
 	childsCount int
+	key         string
 }
 
 func (state *gridState) getVal(x, y int) int {
@@ -32,6 +33,7 @@ func (state *gridState) generateState(xZero, yZero, xTarget, yTarget int, counte
 	newState.depth = state.depth + 1
 	newState.setVal(xZero, yZero, state.getVal(xTarget, yTarget))
 	newState.setVal(xTarget, yTarget, 0)
+	newState.key = newState.mapKey()
 	return &newState
 }
 
