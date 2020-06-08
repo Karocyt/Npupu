@@ -24,7 +24,6 @@ func New() SortedHashedTree {
 		dict:    make(map[string]*Node, 1000),
 		history: make(map[string]bool, 1000),
 	}
-
 	return elem
 }
 
