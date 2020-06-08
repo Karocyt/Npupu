@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/wangjia184/sortedset"
+	"github.com/Karocyt/Npupu/internal/sortedhashedlist"
 )
 
 // scoreFn type: heuristic functions prototype
@@ -27,7 +27,7 @@ type counters struct {
 type Solver struct {
 	counters
 	//openedStates []*gridState
-	openedStates *sortedset.SortedSet
+	openedStates sortedhashedlist.SortedHashedList
 	fn           scoreFn
 	explored     map[string]bool
 	depth        int
@@ -53,7 +53,7 @@ func New(grid []int, gridSize int, fn scoreFn) Solver {
 			maxStates:         1,
 		},
 		fn:           fn,
-		openedStates: sortedset.New(),
+		openedStates: sortedhashedlist.New(),
 		explored:     make(map[string]bool, 100*size*size),
 		Solution:     make(chan []*gridState, 1),
 		Stats:        make(chan counters, 1),
@@ -128,5 +128,5 @@ func (solver *Solver) PrintRes(name string, solution []*gridState, ok bool, stat
 
 // AppendState prout
 func (solver *Solver) AppendState(state *gridState) bool {
-	return solver.openedStates.AddOrUpdate(state.mapKey(), sortedset.SCORE(state.score), state)
+	return solver.openedStates.Insert(state.mapKey(), state, state.score)
 }

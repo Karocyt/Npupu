@@ -23,7 +23,7 @@ func (solver *Solver) decrementParents(state *gridState) {
 // Solve solve
 func (solver *Solver) Solve() {
 	solver.startTime = time.Now()
-	cur := solver.openedStates.PopMin().Value.(*gridState)
+	cur := solver.openedStates.GetMin().(*gridState)
 	curKey := cur.mapKey()
 	for cur != nil && curKey != goalKey {
 		curKey = cur.mapKey()
@@ -45,16 +45,17 @@ func (solver *Solver) Solve() {
 		}
 		solver.counter -= (len(nextStates) - included + 1)
 		solver.decrementParents(cur)
+		solver.openedStates.Delete((cur.mapKey()))
 		if curKey != goalKey {
-			tmp := solver.openedStates.PopMin()
+			tmp := solver.openedStates.GetMin()
 			if tmp != nil {
-				cur = tmp.Value.(*gridState)
+				cur = tmp.(*gridState)
 			} else {
 				cur = nil
 			}
 		}
 	}
-	if solver.openedStates.GetCount() == 0 {
+	if solver.openedStates.GetLen() == 0 {
 		close(solver.Solution)
 	} else {
 		solver.Solution <- append(cur.path, cur)
