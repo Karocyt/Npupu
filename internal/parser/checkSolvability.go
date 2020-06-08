@@ -12,7 +12,6 @@ func goBotRight(pupu []int, goal map[int][2]int, size int) ([]int, map[int][2]in
 			iz = i
 		}
 	}
-	fmt.Println(iz)
 	for iz / size + 1 != size {
 		tmp := pupu[iz]
 		pupu[iz] = pupu[iz + size]
@@ -34,24 +33,17 @@ func goBotRight(pupu []int, goal map[int][2]int, size int) ([]int, map[int][2]in
 
 func countInv(pupu []int, size int) (invCount int, distEmpty int) {
 	pupu_f, goal := heuristics.MakeGoal(size)
-
 	pupu_f , goal = goBotRight(pupu_f, goal, size)
-
 	get1D := func (lol int) int {
-
 		x, y := goal[lol][0], goal[lol][1]
-	//	fmt.Println(heuristics.Get1d(x, y, size))
 		return  heuristics.Get1d(x, y, size)
 	}
 	distEmpty = size
 
-
 	for i := 0; i < size * size - 1; i++ {
 		for j := (i + 1); j < size*size; j++ {
 			posN1 := get1D(pupu[i])
-	//		fmt.Println(posN1, i, pupu[i])
 			posN2 := get1D(pupu[j])
-	//	fmt.Println(posN2, i, pupu[j])
 			if  pupu[i] != 0 && pupu[j] != 0 && posN1 > posN2 {
 				invCount++
 			}
@@ -66,14 +58,7 @@ func countInv(pupu []int, size int) (invCount int, distEmpty int) {
 
 func checkSolvy(pupu []int, size int) bool{
 	invCount, distEmpty := countInv(pupu, size)
-	fmt.Println("info", invCount, distEmpty)
-/*	if size % 2 == 1 && invCount % 2 == 0 {
-			return true
-	} else if  size % 2 == 0 && (distEmpty % 2 != invCount % 2) {
-		return true
-	} else {
-		return false
-	} */
+
 	if size % 2 == 1 {
 		return invCount % 2 == 0
 	} else {
