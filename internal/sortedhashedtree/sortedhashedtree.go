@@ -79,17 +79,13 @@ func (tree *SortedHashedTree) insertNode(node *Node) bool {
 // Delete deletes
 func (tree *SortedHashedTree) Delete(key string) bool {
 	node := tree.dict[key]
-	//fmt.Println("Coucou ?")
 	if node == nil {
-		// panic(errors.New("Cata"))
 		return false
 	}
-	//fmt.Println("Coucou !")
 	tree.length--
 	delete(tree.dict, key)
 
 	if node.left == nil && node.right == nil {
-		//fmt.Println("Coucou orphan")
 		if node.parent != nil {
 			if node.parent.left == node {
 				node.parent.left = nil
@@ -98,14 +94,12 @@ func (tree *SortedHashedTree) Delete(key string) bool {
 				node.parent.right = nil
 				return true
 			}
-			//fmt.Println("ERROR: Please be kind on us.")
 			return false
 		}
 		tree.header = nil
 		return true
 	}
 	if node.left == nil {
-		//fmt.Println("Coucou l guy")
 		if node.parent != nil {
 			if node.parent.left == node {
 				node.parent.left = node.right
@@ -119,7 +113,6 @@ func (tree *SortedHashedTree) Delete(key string) bool {
 		return true
 	}
 	if node.right == nil {
-		//fmt.Println("Coucou r guy")
 		if node.parent != nil {
 			if node.parent.left == node {
 				node.parent.left = node.left
@@ -130,9 +123,9 @@ func (tree *SortedHashedTree) Delete(key string) bool {
 			tree.header = node.left
 		}
 		node.left.parent = node.parent
+		return true
 	}
 
-	//fmt.Println("Deleting", node.key)
 	replacement := getMin(node.right)
 	if replacement == nil {
 		return false
