@@ -89,14 +89,8 @@ func (state gridState) String() string {
 // mapKey Stringify function to provide keys for our visited map
 func (state gridState) mapKey() string {
 	var s string
-	for i := 0; i < size; i++ {
-		for j := 0; j < size; j++ {
-			if state.grid[i*size+j] != 0 {
-				s += fmt.Sprintf("%2d ", state.grid[i*size+j])
-			} else {
-				s += "   "
-			}
-		}
+	for i := 0; i < size*size; i++ {
+		s += string(state.grid[i]) + " "
 	}
 
 	return s
