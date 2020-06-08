@@ -55,6 +55,7 @@ func (tree *SortedHashedTree) insertNode(node *Node) bool {
 	}
 	if tree.header == nil {
 		tree.header = node
+		tree.enforceRB(node)
 		return true
 	}
 	next := tree.header
@@ -73,6 +74,7 @@ func (tree *SortedHashedTree) insertNode(node *Node) bool {
 	} else {
 		current.right = node
 	}
+	tree.enforceRB(node)
 	return true
 }
 
@@ -89,14 +91,13 @@ func (tree *SortedHashedTree) Delete(key string) bool {
 		if node.parent != nil {
 			if node.parent.left == node {
 				node.parent.left = nil
-				return true
-			} else if node.parent.right == node {
+			} else {
 				node.parent.right = nil
-				return true
 			}
-			return false
+			tree.enforceRB(node.parent)
+			return true
 		}
-		tree.header = nil
+		tree.header = nil // else
 		return true
 	}
 	if node.left == nil {
@@ -110,6 +111,7 @@ func (tree *SortedHashedTree) Delete(key string) bool {
 			tree.header = node.right
 		}
 		node.right.parent = node.parent
+		tree.enforceRB(node.parent)
 		return true
 	}
 	if node.right == nil {
@@ -123,6 +125,7 @@ func (tree *SortedHashedTree) Delete(key string) bool {
 			tree.header = node.left
 		}
 		node.left.parent = node.parent
+		tree.enforceRB(node.parent)
 		return true
 	}
 
@@ -140,6 +143,7 @@ func (tree *SortedHashedTree) Delete(key string) bool {
 	node.key, node.score, node.Value, node.right = replacement.key, replacement.score, replacement.Value, replacement.right
 	tree.dict[node.key] = node
 
+	tree.enforceRB(node.parent)
 	return true
 }
 
