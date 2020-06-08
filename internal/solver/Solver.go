@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Karocyt/Npupu/internal/sortedhashedlist"
+	"github.com/Karocyt/Npupu/internal/sortedhashedtree"
 )
 
 // scoreFn type: heuristic functions prototype
@@ -27,7 +27,7 @@ type counters struct {
 type Solver struct {
 	counters
 	//openedStates []*gridState
-	openedStates sortedhashedlist.SortedHashedList
+	openedStates sortedhashedtree.SortedHashedTree
 	fn           scoreFn
 	explored     map[string]bool
 	depth        int
@@ -53,7 +53,7 @@ func New(grid []int, gridSize int, fn scoreFn) Solver {
 			maxStates:         1,
 		},
 		fn:           fn,
-		openedStates: sortedhashedlist.New(),
+		openedStates: sortedhashedtree.New(),
 		explored:     make(map[string]bool, 100*size*size),
 		Solution:     make(chan []*gridState, 1),
 		Stats:        make(chan counters, 1),

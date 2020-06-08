@@ -1,6 +1,9 @@
 package solver
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 func bestScore(l []*gridState) (cur *gridState) {
 	for _, item := range l {
@@ -25,27 +28,34 @@ func (solver *Solver) Solve() {
 	solver.startTime = time.Now()
 	cur := solver.openedStates.GetMin().(*gridState)
 	curKey := cur.mapKey()
+	fmt.Println("0", cur.score)
 	for cur != nil && curKey != goalKey {
 		curKey = cur.mapKey()
 		nextStates := cur.generateNextStates(&solver.counter)
 		solver.explored[curKey] = true
 		solver.totalOpenedStates++
 
+		//fmt.Println("1 (", len(nextStates), ")")
 		var included int
 		for i := range nextStates {
 			if solver.explored[nextStates[i].mapKey()] == false {
 				nextStates[i].score = solver.fn(nextStates[i].grid, size, nextStates[i].depth)
+				//fmt.Println("1.", i, nextStates[i].score)
+				//fmt.Println("/thead score:", i, solver.openedStates.GetMin().(*gridState).score)
 				solver.AppendState(nextStates[i])
 				solver.totalStates++
 				included++
 			}
 		}
+		//fmt.Println("2")
 		if solver.counter > solver.maxStates {
 			solver.maxStates = solver.counter
 		}
 		solver.counter -= (len(nextStates) - included + 1)
 		solver.decrementParents(cur)
-		solver.openedStates.Delete((cur.mapKey()))
+		//fmt.Println(curKey)
+		solver.openedStates.Delete(curKey)
+		//fmt.Println("3", cur.score)
 		if curKey != goalKey {
 			tmp := solver.openedStates.GetMin()
 			if tmp != nil {
@@ -55,6 +65,7 @@ func (solver *Solver) Solve() {
 			}
 		}
 	}
+	//fmt.Println("YOUPI")
 	if solver.openedStates.GetLen() == 0 {
 		close(solver.Solution)
 	} else {
