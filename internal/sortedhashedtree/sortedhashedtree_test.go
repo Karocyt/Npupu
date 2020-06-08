@@ -28,8 +28,8 @@ func TestUno(*testing.T) {
 	fmt.Println("After delete 1:", status)
 	fmt.Println(tmp)
 
-	status = tmp.Delete(fmt.Sprintf("%d", 5))
-	fmt.Println("After delete 5:", status)
+	status = tmp.Delete(fmt.Sprintf("%d", 10))
+	fmt.Println("After delete 10:", status)
 	fmt.Println(tmp)
 
 	// status = tmp.Delete(fmt.Sprintf("%d", 9))
@@ -66,6 +66,10 @@ func TestUno(*testing.T) {
 
 	status = tmp.Delete("8")
 	fmt.Println("After delete 8:", status)
+	fmt.Println(tmp)
+
+	status = tmp.Delete("0")
+	fmt.Println("After delete 0:", status)
 	fmt.Println(tmp)
 }
 
@@ -141,4 +145,158 @@ func Test5(*testing.T) {
 	status := tmp.Delete("0")
 	fmt.Println("After delete 0:", status)
 	fmt.Println(tmp)
+}
+
+// TestOLeft is a test function to use with the go test utility
+func TestOLeft(*testing.T) {
+	fmt.Println("#### delete node with only left child ###################################")
+	tmp := New()
+	tmp.Insert("1", 1, 1.0)
+	fmt.Println(tmp)
+	tmp.Insert("2", 2, 2.0)
+	fmt.Println(tmp)
+	tmp.Insert("0", 0, 0.0)
+	fmt.Println(tmp)
+
+	status := tmp.Delete("2")
+	fmt.Println("After delete 2:", status)
+	fmt.Println(tmp)
+}
+
+// TestORight is a test function to use with the go test utility
+func TestORight(*testing.T) {
+	fmt.Println("#### delete node with only right child ###################################")
+	tmp := New()
+	tmp.Insert("1", 18, 18.0)
+	fmt.Println(tmp)
+	tmp.Insert("2", 17, 19.0)
+	fmt.Println(tmp)
+	tmp.Insert("3", 16, 20.0)
+	fmt.Println(tmp)
+
+	status := tmp.Delete("2")
+	fmt.Println("After delete 2:", status)
+	fmt.Println(tmp)
+}
+
+// TestDelBoth is a test function to use with the go test utility
+func TestDelBoth(*testing.T) {
+	fmt.Println("#### delete node with both childs ###################################")
+	tmp := New()
+	tmp.Insert("1", 1, 1.0)
+	fmt.Println(tmp)
+	tmp.Insert("2", 2, 2.0)
+	fmt.Println(tmp)
+	tmp.Insert("1.5", 3, 1.5)
+	fmt.Println(tmp)
+	tmp.Insert("3", 3, 3.0)
+	fmt.Println(tmp)
+
+	status := tmp.Delete("2")
+	fmt.Println("After delete 2:", status)
+	fmt.Println(tmp)
+}
+
+// TestDelNoChild is a test function to use with the go test utility
+func TestDelNoChild(*testing.T) {
+	fmt.Println("#### delete node with no child ###################################")
+	tmp := New()
+	tmp.Insert("1", 1, 18.0)
+	fmt.Println(tmp)
+	tmp.Insert("2", 2, 17.0)
+	fmt.Println(tmp)
+
+	status := tmp.Delete("2")
+	fmt.Println("After delete 2:", status)
+	fmt.Println(tmp)
+}
+
+// TestDelHead is a test function to use with the go test utility
+func TestDelHead(*testing.T) {
+	fmt.Println("#### delete node with both childs ###################################")
+	tmp := New()
+	tmp.Insert("1", 1, 18.0)
+	fmt.Println(tmp)
+	tmp.Insert("2", 2, 17.0)
+	fmt.Println(tmp)
+	tmp.Insert("3", 3, 16.0)
+	fmt.Println(tmp)
+	tmp.Insert("4", 4, 17.5)
+	fmt.Println(tmp)
+	tmp.Insert("5", 4, 19.0)
+	fmt.Println(tmp)
+	tmp.Insert("5", 4, 20.0)
+	fmt.Println(tmp)
+
+	status := tmp.Delete("1")
+	fmt.Println("After delete 1:", status)
+	fmt.Println(tmp)
+}
+
+// TestReAdd is a test function to use with the go test utility
+func TestReAdd(*testing.T) {
+	fmt.Println("#### re-add deleted node ###################################")
+	tmp := New()
+	tmp.Insert("1", 1, 18.0)
+	fmt.Println(tmp)
+	tmp.Insert("2", 2, 17.0)
+	fmt.Println(tmp)
+	tmp.Insert("3", 3, 16.0)
+	fmt.Println(tmp)
+	tmp.Insert("4", 4, 17.5)
+	fmt.Println(tmp)
+	tmp.Insert("5", 4, 19.0)
+	fmt.Println(tmp)
+	tmp.Insert("5", 4, 20.0)
+	fmt.Println(tmp)
+
+	status := tmp.Delete("2")
+	fmt.Println("After delete 2:", status)
+	fmt.Println(tmp)
+
+	tmp.Insert("2", 2, 17.0)
+	fmt.Println(tmp)
+
+	tmp.Insert("2", 2, 17.0)
+	fmt.Println(tmp)
+}
+
+// TestZero is a test function to use with the go test utility
+func TestZero(t *testing.T) {
+	fmt.Println("#### Fucking Zero ########################################")
+	fmt.Println("Insertion order:")
+	tmp := New()
+	for i := 5; i < 15; i++ {
+		tmp.Insert(fmt.Sprintf("%d", i*2%20), float32(i*2%20), float32(i*2%20))
+		fmt.Print(i*2%20, " ")
+	}
+	fmt.Println()
+	fmt.Println()
+	fmt.Println("Sorted:")
+	fmt.Println(tmp)
+	fmt.Println()
+
+	status := tmp.Delete(fmt.Sprintf("%d", 4))
+	fmt.Println("After delete 4:", status)
+	fmt.Println(tmp)
+
+	status = tmp.Delete(fmt.Sprintf("%d", 1))
+	fmt.Println("After delete 1:", status)
+	fmt.Println(tmp)
+
+	status = tmp.Delete(fmt.Sprintf("%d", 10))
+	fmt.Println("After delete 10:", status)
+	fmt.Println(tmp)
+
+	status = tmp.Delete(fmt.Sprintf("%d", 0))
+	fmt.Println("After delete 0:", status)
+	fmt.Println(tmp)
+
+	status = tmp.Delete(fmt.Sprintf("%d", 0))
+	fmt.Println("After delete 0:", status)
+	fmt.Println(tmp)
+
+	if status == true {
+		t.Errorf("ERROR: 10 deletion doesn't update 0's parent")
+	}
 }

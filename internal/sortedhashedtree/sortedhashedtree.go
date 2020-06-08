@@ -40,15 +40,14 @@ func (tree *SortedHashedTree) Insert(key string, val interface{}, score float32)
 			parent: nil,
 		}
 		tree.dict[key] = &node
-		tree.insertNode(&node)
-		return true
+		return tree.insertNode(&node)
 	}
 	return false
 }
 
-func (tree *SortedHashedTree) insertNode(node *Node) {
+func (tree *SortedHashedTree) insertNode(node *Node) bool {
 	if node == nil {
-		return
+		return false
 	}
 	tree.length++
 	if tree.length > tree.maxSize {
@@ -56,7 +55,7 @@ func (tree *SortedHashedTree) insertNode(node *Node) {
 	}
 	if tree.header == nil {
 		tree.header = node
-		return
+		return true
 	}
 	next := tree.header
 	current := next
@@ -74,43 +73,80 @@ func (tree *SortedHashedTree) insertNode(node *Node) {
 	} else {
 		current.right = node
 	}
+	return true
 }
 
 // Delete deletes
 func (tree *SortedHashedTree) Delete(key string) bool {
 	node := tree.dict[key]
+	//fmt.Println("Coucou ?")
 	if node == nil {
+		// panic(errors.New("Cata"))
 		return false
 	}
+	//fmt.Println("Coucou !")
 	tree.length--
 	delete(tree.dict, key)
-	if node.parent != nil {
-		//fmt.Println("Daddy.")
-		if node.parent.left == node {
-			//fmt.Println("\tI was left")
-			node.parent.left = node.left
-			tree.insertNode(node.right)
-		} else if node.parent.right == node {
-			//fmt.Println("\tI was right")
-			node.parent.right = node.left
-			tree.insertNode(node.right)
+
+	if node.left == nil && node.right == nil {
+		//fmt.Println("Coucou orphan")
+		if node.parent != nil {
+			if node.parent.left == node {
+				node.parent.left = nil
+				return true
+			} else if node.parent.right == node {
+				node.parent.right = nil
+				return true
+			}
+			//fmt.Println("ERROR: Please be kind on us.")
+			return false
 		}
-		if node.left != nil {
-			node.left.parent = node.parent
-		}
-		if node.right != nil {
-			node.right.parent = node.parent
-		}
-	} else {
-		//fmt.Println("No Daddy")
-		if node.right != nil {
-			node.right.parent = nil
-		}
-		tree.header = node.right
-		//fmt.Println("\t delete head")
-		tree.insertNode(node.left)
-		//fmt.Println("\t reinserted left elem")
+		tree.header = nil
+		return true
 	}
+	if node.left == nil {
+		//fmt.Println("Coucou l guy")
+		if node.parent != nil {
+			if node.parent.left == node {
+				node.parent.left = node.right
+			} else {
+				node.parent.right = node.right
+			}
+		} else {
+			tree.header = node.right
+		}
+		node.right.parent = node.parent
+		return true
+	}
+	if node.right == nil {
+		//fmt.Println("Coucou r guy")
+		if node.parent != nil {
+			if node.parent.left == node {
+				node.parent.left = node.left
+			} else {
+				node.parent.right = node.left
+			}
+		} else {
+			tree.header = node.left
+		}
+		node.left.parent = node.parent
+	}
+
+	//fmt.Println("Deleting", node.key)
+	replacement := getMin(node.right)
+	if replacement == nil {
+		return false
+	}
+	if replacement.parent != node {
+		replacement.parent.left = nil
+	} else {
+		replacement.parent.right = nil
+	}
+	replacement.left = node.left
+
+	node.key, node.score, node.Value, node.right = replacement.key, replacement.score, replacement.Value, replacement.right
+	tree.dict[node.key] = node
+
 	return true
 }
 
@@ -129,14 +165,28 @@ func (tree *SortedHashedTree) GetLen() uint64 {
 	return tree.length
 }
 
-// GetMin gives you the element with the lowest score value
-func (tree *SortedHashedTree) GetMin() interface{} {
-	current := tree.header
+func getMin(current *Node) *Node {
 	for current != nil {
 		if current.left != nil {
 			current = current.left
 		} else {
-			return current.Value
+			return current
+		}
+	}
+	return nil
+}
+
+// GetMin gives you the element with the lowest score value
+func (tree *SortedHashedTree) GetMin() interface{} {
+	return getMin(tree.header).Value
+}
+
+func getMax(current *Node) *Node {
+	for current != nil {
+		if current.right != nil {
+			current = current.right
+		} else {
+			return current
 		}
 	}
 	return nil
@@ -144,13 +194,5 @@ func (tree *SortedHashedTree) GetMin() interface{} {
 
 // GetMax gives you the element with the highest score value
 func (tree *SortedHashedTree) GetMax() interface{} {
-	current := tree.header
-	for current != nil {
-		if current.right != nil {
-			current = current.right
-		} else {
-			return current.Value
-		}
-	}
-	return nil
+	return getMax(tree.header).Value
 }

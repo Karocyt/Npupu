@@ -33,7 +33,19 @@ func (node *Node) String() string {
 	if node.left != nil {
 		ret += node.left.String()
 	}
-	ret += node.key
+	ret += node.key // + "["
+	// if node.parent != nil {
+	// 	ret += node.parent.key
+	// }
+	// ret += "l"
+	// if node.left != nil {
+	// 	ret += node.left.key
+	// }
+	// ret += "r"
+	// if node.right != nil {
+	// 	ret += node.right.key
+	// }
+	// ret += "]"
 	if node.right != nil {
 		ret += node.right.String()
 	}
