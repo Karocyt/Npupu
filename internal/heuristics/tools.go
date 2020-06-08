@@ -17,7 +17,7 @@ func Get1d(x int, y int, size int) int {
 	return x*size + y
 }
 
-func get2d(nb int, size int) (int, int) {
+func Get2d(nb int, size int) (int, int) {
 	var x, y int
 	x = nb / size
 	y = nb % size
