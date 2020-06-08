@@ -52,7 +52,7 @@ func countInv(pupu []int, size int) (invCount int, distEmpty int) {
 	//		fmt.Println(posN1, i, pupu[i])
 			posN2 := get1D(pupu[j])
 	//	fmt.Println(posN2, i, pupu[j])
-			if  posN1 > posN2 {
+			if  pupu[i] != 0 && pupu[j] != 0 && posN1 > posN2 {
 				invCount++
 			}
 			if pupu[j] == 0 && j != size * size - 1 {
