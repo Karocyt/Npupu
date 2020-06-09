@@ -10,6 +10,8 @@ import (
 	"github.com/Karocyt/Npupu/internal/solver"
 )
 
+var Format string
+
 func printError(e error) {
 	if e == nil {
 		return
@@ -38,6 +40,7 @@ func parseCmd() (string, map[string]solver.ScoreFn, bool) {
 	flag.BoolVar(&compare, "vs", false, "compare greedy search and Astar performance")
 	flag.BoolVar(&uniform, "ref", false, "adds uniform-cost search for reference")
 	flag.BoolVar(&display, "display", false, "force print of full solution in any case")
+	flag.StringVar(&Format, "format", "snail", "chose format of Npupu solution, snail or classic")
 
 	flag.Parse()
 
@@ -62,6 +65,8 @@ func parseCmd() (string, map[string]solver.ScoreFn, bool) {
 
 func main() {
 	filename, heuristicsMap, display := parseCmd()
+	heuristics.Format = Format
+	solver.Format = Format
 	tmp, size, e := parser.Parse(filename)
 	printError(e)
 	solvers := make([]*solver.Solver, 0, 2)

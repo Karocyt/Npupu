@@ -20,7 +20,6 @@ func (solver *Solver) Solve() {
 	root := cur
 	for cur != nil && cur.key != goalKey {
 		nextStates := cur.generateNextStates()
-
 		var included int
 		for i := range nextStates {
 			if solver.openedStates.IsInHistory(nextStates[i].key) == false {
