@@ -300,3 +300,80 @@ func TestZero(t *testing.T) {
 		t.Errorf("ERROR: 10 deletion doesn't update 0's parent")
 	}
 }
+
+// TestRB1 is a test function to use with the go test utility
+func TestRB1(t *testing.T) {
+	fmt.Println("#### test insert right rebalancing ########################################")
+	fmt.Println("Insertion order:")
+	tmp := New()
+	for i := 0; i < 10; i++ {
+		tmp.Insert(fmt.Sprintf("%d", i), float32(i), float32(i))
+		fmt.Println(i, " ")
+		fmt.Println(tmp)
+	}
+	res := "(((0)1(2))3((4)5((6)7(8(9)))))"
+	if tmp.String() != res {
+		t.Errorf("'%s' should be '%s'", tmp.String(), res)
+	}
+}
+
+// TestRB2 is a test function to use with the go test utility
+func TestRB2(t *testing.T) {
+	fmt.Println("#### test insert left rebalancing ########################################")
+	fmt.Println("Insertion order:")
+	tmp := New()
+	for i := 10; i > 0; i-- {
+		tmp.Insert(fmt.Sprintf("%d", i), float32(i), float32(i))
+		fmt.Println(i, " ")
+		fmt.Println(tmp)
+	}
+	res := "(((((1)2)3(4))5(6))7((8)9(10)))"
+	if tmp.String() != res {
+		t.Errorf("'%s' should be '%s'", tmp.String(), res)
+	}
+}
+
+// TestRB3 is a test function to use with the go test utility
+func TestRB3(t *testing.T) {
+	fmt.Println("#### test delete rebalancing ########################################")
+	fmt.Println("Insertion order:")
+	tmp := New()
+	for i := 0; i < 20; i++ {
+		tmp.Insert(fmt.Sprintf("%d", i), float32(i), float32(i))
+		fmt.Println(tmp)
+	}
+
+	for i := 10; i < 15; i++ {
+		tmp.Delete(fmt.Sprintf("%d", i))
+		fmt.Println(i, " ")
+		fmt.Println(tmp)
+	}
+	res := "(((0)1(2))3((4)5((6)7(8(9)))))"
+	if tmp.String() != res {
+		t.Errorf("'%s' should be '%s'", tmp.String(), res)
+	}
+}
+
+// TestRB4 is a test function to use with the go test utility
+func TestRB4(t *testing.T) {
+	fmt.Println("#### test red header ########################################")
+	fmt.Println("Insertion order:")
+	tmp := New()
+	for i := 0; i < 20; i++ {
+		tmp.Insert(fmt.Sprintf("%d", i), float32(i), float32(i))
+		fmt.Println(tmp)
+	}
+
+	for i := 8; i < 20; i++ {
+		tmp.Delete(fmt.Sprintf("%d", i))
+		fmt.Println(i, " ")
+		fmt.Println(tmp)
+	}
+	tmp.Delete(fmt.Sprintf("%d", 7))
+	fmt.Println(7, " ")
+	fmt.Println(tmp)
+	res := "(((0)1(2))3((4)5((6)7(8(9)))))"
+	if tmp.String() != res {
+		t.Errorf("'%s' should be '%s'", tmp.String(), res)
+	}
+}

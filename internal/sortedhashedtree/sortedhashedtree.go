@@ -35,7 +35,7 @@ func (tree *SortedHashedTree) Insert(key string, val interface{}, score float32)
 			key:    key,
 			Value:  val,
 			score:  score,
-			color:  BLACK,
+			color:  RED,
 			parent: nil,
 		}
 		tree.dict[key] = &node
@@ -78,8 +78,15 @@ func (tree *SortedHashedTree) insertNode(node *Node) bool {
 	return true
 }
 
+func setHeadBlack(tree *SortedHashedTree) {
+	if tree.header != nil {
+		tree.header.color = BLACK
+	}
+}
+
 // Delete deletes
 func (tree *SortedHashedTree) Delete(key string) bool {
+	defer setHeadBlack(tree)
 	node := tree.dict[key]
 	if node == nil {
 		return false
@@ -128,22 +135,24 @@ func (tree *SortedHashedTree) Delete(key string) bool {
 		tree.enforceRB(node.parent)
 		return true
 	}
-
+	// if 2 childs
 	replacement := getMin(node.right)
 	if replacement == nil {
 		return false
 	}
-	if replacement.parent != node {
-		replacement.parent.left = nil
-	} else {
-		replacement.parent.right = nil
-	}
-	replacement.left = node.left
 
-	node.key, node.score, node.Value, node.right = replacement.key, replacement.score, replacement.Value, replacement.right
+	if replacement.parent.right == replacement {
+		replacement.parent.right = replacement.right
+	} else {
+		replacement.parent.left = replacement.right
+	}
+	if replacement.right != nil {
+		replacement.right.parent = replacement.parent
+	}
+	node.key, node.score, node.Value = replacement.key, replacement.score, replacement.Value
 	tree.dict[node.key] = node
 
-	tree.enforceRB(node.parent)
+	//tree.enforceRB(node.parent)
 	return true
 }
 

@@ -33,7 +33,12 @@ func (node *Node) String() string {
 	if node.left != nil {
 		ret += node.left.String()
 	}
-	ret += node.key // + "["
+	ret += node.key
+	if node.color == RED {
+		ret += "R"
+	} else {
+		ret += "B"
+	} // + "["
 	// if node.parent != nil {
 	// 	ret += node.parent.key
 	// }

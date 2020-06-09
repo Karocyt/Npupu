@@ -2,6 +2,9 @@ package sortedhashedtree
 
 func (tree *SortedHashedTree) rotateLeft(node *Node) {
 	nodeRight := node.right
+	if nodeRight == nil {
+		return
+	}
 	node.right = nodeRight.left
 	if node.right != nil {
 		node.right.parent = node
@@ -20,6 +23,9 @@ func (tree *SortedHashedTree) rotateLeft(node *Node) {
 
 func (tree *SortedHashedTree) rotateRight(node *Node) {
 	nodeLeft := node.left
+	if nodeLeft == nil {
+		return
+	}
 	node.left = nodeLeft.right
 	if node.left != nil {
 		node.left.parent = node
@@ -43,8 +49,11 @@ func (tree *SortedHashedTree) enforceRB(node *Node) {
 	if node == nil {
 		return
 	}
+
 	// Remontada while oldies
 	for node != tree.header && node.color != BLACK && node.parent.color == RED {
+
+		//fmt.Print("Coucou")
 		p = node.parent
 		gp = p.parent
 
@@ -88,7 +97,7 @@ func (tree *SortedHashedTree) enforceRB(node *Node) {
 					node = p
 					p = p.parent
 				}
-				tree.rotateRight(gp)
+				tree.rotateLeft(gp)
 				p.color, gp.color = gp.color, p.color
 				node = p
 
