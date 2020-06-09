@@ -73,10 +73,7 @@ func (tree *SortedHashedTree) enforceRB(node *Node) {
 					node = p
 					p = p.parent
 				}
-				/* Case : 3
-				    pt is left child of its parent
-					Right-rotation required
-				*/
+				// node is left child of its parent
 				tree.rotateRight(gp) //// du vieux node ?!
 				p.color, gp.color = gp.color, p.color
 				node = p

@@ -14,10 +14,10 @@ var size int
 var goalKey string
 
 type counters struct {
-	counter           int
-	maxStates         int
-	totalOpenedStates int
-	totalStates       int
+	counter           uint64
+	maxStates         uint64
+	totalOpenedStates uint64
+	totalStates       uint64
 	startTime         time.Time
 	totalTime         time.Duration
 }
@@ -26,7 +26,6 @@ type counters struct {
 // Solver.Solution contains ordered states from the starting grid to the solved one
 type Solver struct {
 	counters
-	//openedStates []*gridState
 	openedStates sortedhashedtree.SortedHashedTree
 	fn           scoreFn
 	depth        int
@@ -46,11 +45,7 @@ func Init(gridSize int) {
 // (we can use "var s Solver.Solver" in main instead of calling this)
 func New(grid []int, gridSize int, fn scoreFn) Solver {
 	solver := Solver{
-		counters: counters{
-			totalOpenedStates: 0,
-			totalStates:       1,
-			maxStates:         1,
-		},
+		counters:     counters{},
 		fn:           fn,
 		openedStates: sortedhashedtree.New(),
 		Solution:     make(chan []*gridState, 1),

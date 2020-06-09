@@ -22,7 +22,7 @@ func (state *gridState) setVal(x, y, value int) {
 	state.grid[x*size+y] = value
 }
 
-func (state *gridState) generateState(xZero, yZero, xTarget, yTarget int, counter *int) *gridState {
+func (state *gridState) generateState(xZero, yZero, xTarget, yTarget int, counter *uint64) *gridState {
 	newPath := make([]*gridState, len(state.path), len(state.path)+1)
 	copy(newPath, state.path)
 	newPath = append(newPath, state)
@@ -37,7 +37,7 @@ func (state *gridState) generateState(xZero, yZero, xTarget, yTarget int, counte
 	return &newState
 }
 
-func (state *gridState) generateNextStates(counter *int) []*gridState {
+func (state *gridState) generateNextStates(counter *uint64) []*gridState {
 	ret := make([]*gridState, 0, 4)
 	idx := -1
 	for i, nb := range state.grid {
@@ -96,7 +96,7 @@ func (state gridState) mapKey() string {
 }
 
 // NewGrid creates a new gridState and manage the states counter
-func newGrid(path []*gridState, counter *int) gridState {
+func newGrid(path []*gridState, counter *uint64) gridState {
 	for i := range path {
 		path[i].childsCount++
 	}

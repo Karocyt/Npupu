@@ -11,11 +11,16 @@ type SortedHashedTree struct {
 	maxSize      uint64
 }
 
-func (tree SortedHashedTree) String() string {
+func (tree *SortedHashedTree) String() string {
 	if tree.header != nil {
 		return tree.header.String()
 	}
 	return "Empty"
+}
+
+// GetStats returns all the stats we got
+func (tree *SortedHashedTree) GetStats() (uint64, uint64, uint64) {
+	return tree.inputsCount, tree.outputsCount, tree.maxSize
 }
 
 // New returns a new initialized SortedHashedTree
