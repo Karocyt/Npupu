@@ -9,7 +9,7 @@ type gridState struct {
 	grid        []int
 	depth       int
 	score       float32
-	path        []*gridState
+	parent      *gridState
 	childsCount int
 	key         string
 }
@@ -22,12 +22,9 @@ func (state *gridState) setVal(x, y, value int) {
 	state.grid[x*size+y] = value
 }
 
-func (state *gridState) generateState(xZero, yZero, xTarget, yTarget int, counter *uint64) *gridState {
-	newPath := make([]*gridState, len(state.path), len(state.path)+1)
-	copy(newPath, state.path)
-	newPath = append(newPath, state)
-	newState := newGrid(newPath, counter)
-	newState.path = append(state.path, state)
+func (state *gridState) generateState(xZero, yZero, xTarget, yTarget int) *gridState {
+	newState := newGrid(state)
+	newState.parent = state
 	newState.grid = make([]int, len(state.grid))
 	copy(newState.grid, state.grid)
 	newState.depth = state.depth + 1
@@ -37,7 +34,7 @@ func (state *gridState) generateState(xZero, yZero, xTarget, yTarget int, counte
 	return &newState
 }
 
-func (state *gridState) generateNextStates(counter *uint64) []*gridState {
+func (state *gridState) generateNextStates() []*gridState {
 	ret := make([]*gridState, 0, 4)
 	idx := -1
 	for i, nb := range state.grid {
@@ -48,16 +45,16 @@ func (state *gridState) generateNextStates(counter *uint64) []*gridState {
 	}
 	x, y := idx/size, idx%size
 	if x > 0 {
-		ret = append(ret, state.generateState(x, y, x-1, y, counter))
+		ret = append(ret, state.generateState(x, y, x-1, y))
 	}
 	if x < size-1 {
-		ret = append(ret, state.generateState(x, y, x+1, y, counter))
+		ret = append(ret, state.generateState(x, y, x+1, y))
 	}
 	if y > 0 {
-		ret = append(ret, state.generateState(x, y, x, y-1, counter))
+		ret = append(ret, state.generateState(x, y, x, y-1))
 	}
 	if y < size-1 {
-		ret = append(ret, state.generateState(x, y, x, y+1, counter))
+		ret = append(ret, state.generateState(x, y, x, y+1))
 	}
 	return ret
 }
@@ -96,13 +93,16 @@ func (state gridState) mapKey() string {
 }
 
 // NewGrid creates a new gridState and manage the states counter
-func newGrid(path []*gridState, counter *uint64) gridState {
-	for i := range path {
-		path[i].childsCount++
+func newGrid(parent *gridState) gridState {
+	if parent != nil {
+		root := parent
+		for root.parent != nil {
+			root.childsCount++
+			root = root.parent
+		}
+		root.childsCount++
 	}
-	(*counter)++
 	var n gridState
-	n.path = make([]*gridState, len(path))
-	copy(n.path, path)
+	n.parent = parent
 	return n
 }

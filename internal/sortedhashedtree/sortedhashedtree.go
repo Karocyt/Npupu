@@ -190,11 +190,12 @@ func getMin(current *Node) *Node {
 
 // GetMin gives you the element with the lowest score value
 func (tree *SortedHashedTree) GetMin() interface{} {
-	ret := getMin(tree.header).Value
+	ret := getMin(tree.header)
 	if ret != nil {
 		tree.outputsCount++
+		return ret.Value
 	}
-	return ret
+	return nil
 }
 
 func getMax(current *Node) *Node {
