@@ -44,6 +44,15 @@ func parseCmd() (string, map[string]solver.ScoreFn, bool) {
 
 	flag.Parse()
 
+	if Format != "classic" {
+		if Format != "snail" {
+			fmt.Println("-format flag invalide:", Format)
+			flag.Usage()
+			os.Exit(1)
+		}
+	}
+
+
 	if heuristic < 1 || heuristic >= len(heuristics.Functions) || flag.NArg() != 0 {
 		flag.Usage()
 		os.Exit(1)
