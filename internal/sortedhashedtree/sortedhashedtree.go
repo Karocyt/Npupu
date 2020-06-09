@@ -27,12 +27,12 @@ func (tree *SortedHashedTree) GetStats() (uint64, uint64, uint64) {
 }
 
 // New returns a new initialized SortedHashedTree
-func New() SortedHashedTree {
+func New() *SortedHashedTree {
 	elem := SortedHashedTree{
 		dict:    make(map[string]*Node, 1000),
 		history: make(map[string]bool, 1000),
 	}
-	return elem
+	return &elem
 }
 
 // Insert inserts

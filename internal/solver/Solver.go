@@ -26,7 +26,7 @@ type counters struct {
 // Solver.Solution contains ordered states from the starting grid to the solved one
 type Solver struct {
 	counters
-	openedStates sortedhashedtree.SortedHashedTree
+	openedStates *sortedhashedtree.SortedHashedTree
 	fn           scoreFn
 	depth        int
 	Solution     chan []*gridState
@@ -41,9 +41,7 @@ func Init(gridSize int) {
 }
 
 // New initialize a new solverStruct, required to disciminate variables in multi-solving
-// Can be removed if we don't need to initialize anything
-// (we can use "var s Solver.Solver" in main instead of calling this)
-func New(grid []int, gridSize int, fn scoreFn) Solver {
+func New(grid []int, gridSize int, fn scoreFn) *Solver {
 	solver := Solver{
 		counters:     counters{},
 		fn:           fn,
@@ -60,7 +58,7 @@ func New(grid []int, gridSize int, fn scoreFn) Solver {
 	state.key = state.mapKey()
 
 	solver.AppendState(&state)
-	return solver
+	return &solver
 }
 
 // PrintStats does exactly what it says

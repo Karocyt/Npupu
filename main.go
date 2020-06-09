@@ -37,7 +37,7 @@ func main() {
 	validateArgs()
 	tmp, size, h, e := parser.Parse(len(heuristics.Functions))
 	printError(e)
-	solvers := make([]solver.Solver, 0, 2)
+	solvers := make([]*solver.Solver, 0, 2)
 	solver.Init(size)
 	for _, currH := range h {
 		solvers = append(solvers, solver.New(tmp, size, heuristics.Functions[currH].Fn))
