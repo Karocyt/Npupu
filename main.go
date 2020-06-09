@@ -47,7 +47,11 @@ func main() {
 	for i := range solvers {
 		res, ok := <-solvers[i].Solution
 		stats := <-solvers[i].Stats
-		solvers[i].PrintRes(heuristics.Functions[h[i]].Name, res, ok, stats)
+		var display bool
+		if len(solvers) == 1 {
+			display = true
+		}
+		solvers[i].PrintRes(heuristics.Functions[h[i]].Name, res, ok, stats, display)
 	}
 	os.Exit(0)
 }

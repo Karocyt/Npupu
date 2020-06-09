@@ -101,14 +101,17 @@ func makeGoalKey(s int) string {
 }
 
 // PrintRes prints.
-func (solver *Solver) PrintRes(name string, solution []*gridState, ok bool, stats counters) {
-	fmt.Printf("Solution using %s:\n\n", name)
-	if ok {
+func (solver *Solver) PrintRes(name string, solution []*gridState, success bool, stats counters, display bool) {
+	if display {
 		for _, step := range solution {
 			fmt.Println(step)
 		}
+	}
+	fmt.Printf("Solution using %s:\n\n", name)
+	if success {
+		fmt.Printf("Solution found: %d moves\n", len(solution))
 	} else {
-		fmt.Println("This puzzle is not solvable.")
+		fmt.Println("This puzzle is not solvable")
 	}
 	PrintStats(stats)
 }

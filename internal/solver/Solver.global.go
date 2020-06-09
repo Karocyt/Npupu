@@ -1,7 +1,6 @@
 package solver
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -58,6 +57,5 @@ func (solver *Solver) Solve() {
 	solver.totalTime = time.Since(solver.startTime)
 	solver.counters.totalStates, solver.counters.totalOpenedStates, solver.counters.maxStates = solver.openedStates.GetStats()
 	solver.Stats <- solver.counters
-	fmt.Println(solver.openedStates.GetStats())
 	return
 }
