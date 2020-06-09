@@ -19,11 +19,11 @@ func (tree *SortedHashedTree) String() string {
 }
 
 // GetStats returns all the stats we got
-func (tree *SortedHashedTree) GetStats() (uint64, uint64, uint64) {
+func (tree *SortedHashedTree) GetStats() (int, int, int) {
 	if tree.length > tree.maxSize {
 		tree.maxSize = tree.length
 	}
-	return tree.inputsCount, tree.outputsCount, tree.maxSize
+	return int(tree.inputsCount), int(tree.outputsCount), int(tree.maxSize)
 }
 
 // New returns a new initialized SortedHashedTree

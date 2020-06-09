@@ -32,7 +32,7 @@ func parseCmd() (string, map[string]solver.ScoreFn, bool) {
 		}
 	}
 
-	flag.StringVar(&filename, "f", "", "(optionnal) filename of your input file")
+	flag.StringVar(&filename, "f", "", "filename of your input file")
 	flag.IntVar(&heuristic, "h", 1, hUsage)
 	flag.BoolVar(&aStar, "s", false, "uses A* algorithm to find the shortest path")
 	flag.BoolVar(&compare, "vs", false, "compare greedy search and Astar performance")

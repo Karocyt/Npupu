@@ -14,11 +14,9 @@ var size int
 var goalKey string
 
 type counters struct {
-	counter           uint64
-	worstCase         uint64
-	maxStates         uint64
-	totalOpenedStates uint64
-	totalStates       uint64
+	maxStates         int
+	totalOpenedStates int
+	totalStates       int
 	startTime         time.Time
 	totalTime         time.Duration
 }
@@ -58,7 +56,8 @@ func New(grid []int, gridSize int, fn ScoreFn, name string) *Solver {
 	state.depth = 0
 	state.score = fn(grid, gridSize, 1)
 	state.key = state.mapKey()
-	solver.counter++
+	state.id = 42
+	state.path = []int8{}
 
 	solver.AppendState(&state)
 	return &solver
@@ -70,7 +69,6 @@ func PrintStats(stats counters) {
 	fmt.Printf("Total states generated: %d\n", stats.totalStates)
 	fmt.Printf("Total states selected: %d\n", stats.totalOpenedStates)
 	fmt.Printf("Maximum states in the open set at once: %d\n", stats.maxStates)
-	fmt.Printf("Maximum number of states ever represented in memory: %d\n\n", stats.counter)
 }
 
 func makeGoalKey(s int) string {

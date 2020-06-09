@@ -1,6 +1,6 @@
 package heuristics
 
-// all heuristic functions should be of type func([]int) string
+// all heuristic functions should be of type func([]int, int, int) string
 
 type heuristicFn struct {
 	Fn    func(grid []int, size int, depth int) float32
@@ -8,7 +8,7 @@ type heuristicFn struct {
 	Astar func(grid []int, size int, depth int) float32
 }
 
-// Functions is our slice of heuristics as couples {function func, name string, greedy bool}
+// Functions is our slice of heuristics as couples {score func, name string, aStar func}
 var Functions = []heuristicFn{
 	heuristicFn{uniform, "Uniform-cost", nil},
 	heuristicFn{manhattan, "Manhattan Distance", manhattanA},

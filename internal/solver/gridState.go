@@ -6,12 +6,12 @@ import (
 
 // gridState type: grid format/interface
 type gridState struct {
-	grid        []int
-	depth       int
-	score       float32
-	parent      *gridState
-	childsCount int
-	key         string
+	grid  []int
+	depth int
+	score float32
+	path  []int8
+	key   string
+	id    int8
 }
 
 func (state *gridState) getVal(x, y int) int {
@@ -24,7 +24,8 @@ func (state *gridState) setVal(x, y, value int) {
 
 func (state *gridState) generateState(xZero, yZero, xTarget, yTarget int) *gridState {
 	newState := newGrid(state)
-	newState.parent = state
+	newState.path = make([]int8, len(state.path)+1)
+	copy(newState.path, state.path)
 	newState.grid = make([]int, len(state.grid))
 	copy(newState.grid, state.grid)
 	newState.depth = state.depth + 1
@@ -55,6 +56,10 @@ func (state *gridState) generateNextStates() []*gridState {
 	}
 	if y < size-1 {
 		ret = append(ret, state.generateState(x, y, x, y+1))
+	}
+	for i := range ret {
+		//ret[i].id = int8(i)
+		ret[i].path[len(state.path)] = int8(i)
 	}
 	return ret
 }
@@ -94,15 +99,6 @@ func (state gridState) mapKey() string {
 
 // NewGrid creates a new gridState and manage the states counter
 func newGrid(parent *gridState) gridState {
-	if parent != nil {
-		root := parent
-		for root.parent != nil {
-			root.childsCount++
-			root = root.parent
-		}
-		root.childsCount++
-	}
 	var n gridState
-	n.parent = parent
 	return n
 }
