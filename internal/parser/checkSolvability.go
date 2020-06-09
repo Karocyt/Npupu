@@ -51,7 +51,6 @@ func countInv(pupu []int, size int) (invCount int, distEmpty int) {
 			}
 		}
 	}
-
 	return
 }
 
@@ -62,7 +61,7 @@ func checkSolvy(pupu []int, size int) bool {
 		return invCount%2 == 0
 	} else {
 		if distEmpty%2 == 0 {
-			return invCount%2 == 1
+			return invCount%2 == 1 || invCount == 0
 		} else {
 			return invCount%2 == 0
 		}

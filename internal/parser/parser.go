@@ -103,8 +103,7 @@ func Parse(filename string) (pupu []int, size int, e error) {
 	if filename != "" {
 		pupu, size, e = read(filename)
 	} else {
-		size = 3
-		panic(errors.New("TO DO"))
+		pupu, size = pupu_rand()
 	}
 
 	if e == nil && !checkSolvy(pupu, size) {
