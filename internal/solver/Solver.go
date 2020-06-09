@@ -7,8 +7,8 @@ import (
 	"github.com/Karocyt/Npupu/internal/sortedhashedtree"
 )
 
-// scoreFn type: heuristic functions prototype
-type scoreFn func([]int, int, int) float32
+// ScoreFn type: heuristic functions prototype
+type ScoreFn func([]int, int, int) float32
 
 var size int
 var goalKey string
@@ -26,8 +26,9 @@ type counters struct {
 // Solver.Solution contains ordered states from the starting grid to the solved one
 type Solver struct {
 	counters
+	Name         string
 	openedStates *sortedhashedtree.SortedHashedTree
-	fn           scoreFn
+	fn           ScoreFn
 	depth        int
 	Solution     chan []*gridState
 	E            error
@@ -41,9 +42,10 @@ func Init(gridSize int) {
 }
 
 // New initialize a new solverStruct, required to disciminate variables in multi-solving
-func New(grid []int, gridSize int, fn scoreFn) *Solver {
+func New(grid []int, gridSize int, fn ScoreFn, name string) *Solver {
 	solver := Solver{
 		counters:     counters{},
+		Name:         name,
 		fn:           fn,
 		openedStates: sortedhashedtree.New(),
 		Solution:     make(chan []*gridState, 1),
@@ -101,13 +103,13 @@ func makeGoalKey(s int) string {
 }
 
 // PrintRes prints.
-func (solver *Solver) PrintRes(name string, solution []*gridState, success bool, stats counters, display bool) {
+func (solver *Solver) PrintRes(solution []*gridState, success bool, stats counters, display bool) {
 	if display {
 		for _, step := range solution {
 			fmt.Println(step)
 		}
 	}
-	fmt.Printf("Solution using %s:\n\n", name)
+	fmt.Printf("Solution using %s:\n\n", solver.Name)
 	if success {
 		fmt.Printf("Solution found: %d moves\n", len(solution))
 	} else {

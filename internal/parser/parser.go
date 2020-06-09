@@ -20,11 +20,9 @@ func isValid(str string) bool {
 	return true
 }
 
-func read() (pupu []int, size int, e error) {
-	filename := os.Args[1]
-
+func read(filename string) (pupu []int, size int, e error) {
 	fileInfo, e := os.Stat(filename)
-	if e != nil{
+	if e != nil {
 		return
 	}
 	if fileInfo.IsDir() {
@@ -101,8 +99,13 @@ func read() (pupu []int, size int, e error) {
 }
 
 // Parse function: Only exported function
-func Parse(heuristicsCount int) (pupu []int, size int, heuristics []int, e error) {
-	pupu, size, e = read()
+func Parse(filename string) (pupu []int, size int, e error) {
+	if filename != "" {
+		pupu, size, e = read(filename)
+	} else {
+		size = 3
+		panic(errors.New("TO DO"))
+	}
 
 	if e == nil && !checkSolvy(pupu, size) {
 		fmt.Println("Pupu is not solvable :3")
@@ -110,22 +113,6 @@ func Parse(heuristicsCount int) (pupu []int, size int, heuristics []int, e error
 	}
 	if e != nil {
 		return
-	}
-	heuristics = []int{}
-	for i := 2; i < len(os.Args); i++ {
-		var h int
-		h, e = strconv.Atoi(os.Args[i])
-		if e == nil && (h >= heuristicsCount || h < 0) {
-			e = errors.New("Invalid heuristic")
-		}
-		if e != nil {
-			return // pupu, size, heuristics, e
-		}
-		heuristics = append(heuristics, h)
-
-	}
-	if len(heuristics) == 0 {
-		e = errors.New("Please provide a heuristic")
 	}
 	return
 }

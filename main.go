@@ -1,7 +1,7 @@
 package main
 
 import (
-	"errors"
+	"flag"
 	"fmt"
 	"os"
 
@@ -16,32 +16,59 @@ func printError(e error) {
 	}
 	fmt.Print("ERROR: ")
 	fmt.Fprintln(os.Stderr, e)
-	fmt.Printf("usage: %s filename [0 to %d heuristic]\n\n", os.Args[0], len(heuristics.Functions)-1)
-	fmt.Println("Available heuristics:")
-	for i, h := range heuristics.Functions {
-		fmt.Printf("\t%d: %s\n", i, h.Name)
-	}
+	flag.Usage()
 	os.Exit(1)
 }
 
-func validateArgs() (e error) {
-	if len(os.Args) < 2 {
-		printError(errors.New("Please provide a file to open"))
-	} else if len(os.Args) > 4 {
-		printError(errors.New("Too Many arguments"))
+func parseCmd() (string, map[string]solver.ScoreFn) {
+	var filename string
+	var aStar, compare, uniform bool
+	heuristic := 2
+
+	hUsage := "Available heuristics:\n"
+	for i, h := range heuristics.Functions {
+		if i != 0 {
+			hUsage += fmt.Sprintf("\t%d: %s\n", i, h.Name)
+		}
 	}
-	return
+
+	flag.StringVar(&filename, "f", "", "(optionnal) filename of your input file")
+	flag.IntVar(&heuristic, "h", 1, hUsage)
+	flag.BoolVar(&aStar, "s", false, "uses A* algorithm to find the shortest path")
+	flag.BoolVar(&compare, "vs", false, "compare greedy search and Astar performance")
+	flag.BoolVar(&uniform, "reference", false, "adds uniform-cost search for reference")
+
+	flag.Parse()
+
+	if heuristic < 1 || heuristic >= len(heuristics.Functions) || flag.NArg() != 0 {
+		flag.Usage()
+		os.Exit(1)
+	}
+
+	heuristicsMap := map[string]solver.ScoreFn{}
+	if compare || !aStar {
+		heuristicsMap["Greedy "+heuristics.Functions[heuristic].Name] = heuristics.Functions[heuristic].Fn
+	}
+	if compare || aStar {
+		heuristicsMap["A* "+heuristics.Functions[heuristic].Name] = heuristics.Functions[heuristic].Astar
+	}
+	if uniform {
+		heuristicsMap[heuristics.Functions[0].Name] = heuristics.Functions[0].Fn
+	}
+
+	return filename, heuristicsMap
 }
 
 func main() {
-	validateArgs()
-	tmp, size, h, e := parser.Parse(len(heuristics.Functions))
+	filename, heuristicsMap := parseCmd()
+	tmp, size, e := parser.Parse(filename)
 	printError(e)
 	solvers := make([]*solver.Solver, 0, 2)
 	solver.Init(size)
-	for _, currH := range h {
-		solvers = append(solvers, solver.New(tmp, size, heuristics.Functions[currH].Fn))
-		go solvers[len(solvers)-1].Solve()
+	for name, fn := range heuristicsMap {
+		s := solver.New(tmp, size, fn, name)
+		solvers = append(solvers, s)
+		go s.Solve()
 	}
 
 	for i := range solvers {
@@ -51,7 +78,7 @@ func main() {
 		if len(solvers) == 1 {
 			display = true
 		}
-		solvers[i].PrintRes(heuristics.Functions[h[i]].Name, res, ok, stats, display)
+		solvers[i].PrintRes(res, ok, stats, display)
 	}
 	os.Exit(0)
 }
