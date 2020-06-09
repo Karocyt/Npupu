@@ -51,7 +51,7 @@ func (tree *SortedHashedTree) enforceRB(node *Node) {
 	}
 
 	// Remontada while oldies
-	for node != tree.header && node.color != BLACK && node.parent.color == RED {
+	for node != tree.header && node.color == RED && node.parent.color == RED {
 
 		//fmt.Print("Coucou")
 		p = node.parent
