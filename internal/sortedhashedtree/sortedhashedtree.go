@@ -20,6 +20,9 @@ func (tree *SortedHashedTree) String() string {
 
 // GetStats returns all the stats we got
 func (tree *SortedHashedTree) GetStats() (uint64, uint64, uint64) {
+	if tree.length > tree.maxSize {
+		tree.maxSize = tree.length
+	}
 	return tree.inputsCount, tree.outputsCount, tree.maxSize
 }
 
@@ -54,13 +57,10 @@ func (tree *SortedHashedTree) insertNode(node *Node) bool {
 	if node == nil {
 		return false
 	}
+	defer tree.enforceRB(node)
 	tree.length++
-	if tree.length > tree.maxSize {
-		tree.maxSize = tree.length
-	}
 	if tree.header == nil {
 		tree.header = node
-		tree.enforceRB(node)
 		return true
 	}
 	next := tree.header
@@ -79,7 +79,6 @@ func (tree *SortedHashedTree) insertNode(node *Node) bool {
 	} else {
 		current.right = node
 	}
-	tree.enforceRB(node)
 	return true
 }
 
@@ -95,6 +94,9 @@ func (tree *SortedHashedTree) Delete(key string) bool {
 	node := tree.dict[key]
 	if node == nil {
 		return false
+	}
+	if tree.length > tree.maxSize {
+		tree.maxSize = tree.length
 	}
 	tree.length--
 	delete(tree.dict, key)
@@ -157,7 +159,6 @@ func (tree *SortedHashedTree) Delete(key string) bool {
 	node.key, node.score, node.Value = replacement.key, replacement.score, replacement.Value
 	tree.dict[node.key] = node
 
-	//tree.enforceRB(node.parent)
 	return true
 }
 
