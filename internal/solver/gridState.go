@@ -67,7 +67,7 @@ func (state *gridState) generateNextStates() []*gridState {
 // gridState Stringify function
 func (state gridState) String() string {
 	nbSize := len(fmt.Sprintf("%d", size*size-1))
-	nbWall := "####"
+	nbWall := "###"
 	for i := 0; i < nbSize; i++ {
 		nbWall += "#"
 	}
@@ -75,17 +75,17 @@ func (state gridState) String() string {
 	for i := 0; i < size; i++ {
 		wall += nbWall
 	}
-	wall += "\n"
+	wall += "#\n"
 	s := wall
 	for i := 0; i < size; i++ {
 		for j := 0; j < size; j++ {
 			if state.grid[i*size+j] != 0 {
-				s += fmt.Sprintf("# %*d #", nbSize, state.grid[i*size+j])
+				s += fmt.Sprintf("# %*d ", nbSize, state.grid[i*size+j])
 			} else {
-				s += fmt.Sprintf("# %*s #", nbSize, "")
+				s += fmt.Sprintf("# %*s ", nbSize, "")
 			}
 		}
-		s += "\n"
+		s += "#\n"
 		s += wall
 	}
 	return fmt.Sprintf("Step %d:\n%sScore: %f\n", state.depth, s, state.score)
