@@ -44,12 +44,10 @@ func parseCmd() (string, map[string]solver.ScoreFn, bool) {
 
 	flag.Parse()
 
-	if Format != "classic" {
-		if Format != "snail" {
+	if Format != "classic" && Format != "snail" {
 			fmt.Println("-format flag invalide:", Format)
 			flag.Usage()
 			os.Exit(1)
-		}
 	}
 
 
