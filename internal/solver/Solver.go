@@ -111,7 +111,7 @@ func (solver *Solver) PrintRes(solution []*gridState, success bool, stats counte
 	}
 	fmt.Printf("Solution using %s:\n\n", solver.Name)
 	if success {
-		fmt.Printf("Solution found: %d moves\n", len(solution))
+		fmt.Printf("Solution found: %d moves\n", len(solution)-1)
 	} else {
 		fmt.Println("This puzzle is not solvable")
 	}
