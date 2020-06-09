@@ -20,9 +20,9 @@ func printError(e error) {
 	os.Exit(1)
 }
 
-func parseCmd() (string, map[string]solver.ScoreFn) {
+func parseCmd() (string, map[string]solver.ScoreFn, bool) {
 	var filename string
-	var aStar, compare, uniform bool
+	var aStar, compare, uniform, display bool
 	heuristic := 2
 
 	hUsage := "Available heuristics:\n"
@@ -36,7 +36,8 @@ func parseCmd() (string, map[string]solver.ScoreFn) {
 	flag.IntVar(&heuristic, "h", 1, hUsage)
 	flag.BoolVar(&aStar, "s", false, "uses A* algorithm to find the shortest path")
 	flag.BoolVar(&compare, "vs", false, "compare greedy search and Astar performance")
-	flag.BoolVar(&uniform, "reference", false, "adds uniform-cost search for reference")
+	flag.BoolVar(&uniform, "ref", false, "adds uniform-cost search for reference")
+	flag.BoolVar(&display, "display", false, "force print of full solution in any case")
 
 	flag.Parse()
 
@@ -56,11 +57,11 @@ func parseCmd() (string, map[string]solver.ScoreFn) {
 		heuristicsMap[heuristics.Functions[0].Name] = heuristics.Functions[0].Fn
 	}
 
-	return filename, heuristicsMap
+	return filename, heuristicsMap, display
 }
 
 func main() {
-	filename, heuristicsMap := parseCmd()
+	filename, heuristicsMap, display := parseCmd()
 	tmp, size, e := parser.Parse(filename)
 	printError(e)
 	solvers := make([]*solver.Solver, 0, 2)
@@ -71,13 +72,12 @@ func main() {
 		go s.Solve()
 	}
 
+	if len(solvers) == 1 {
+		display = true
+	}
 	for i := range solvers {
 		res, ok := <-solvers[i].Solution
 		stats := <-solvers[i].Stats
-		var display bool
-		if len(solvers) == 1 {
-			display = true
-		}
 		solvers[i].PrintRes(res, ok, stats, display)
 	}
 	os.Exit(0)
