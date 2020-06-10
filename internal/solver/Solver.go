@@ -76,9 +76,9 @@ func New(grid []int, gridSize int, fn ScoreFn, name string) *Solver {
 // PrintStats does exactly what it says
 func PrintStats(stats counters) {
 	fmt.Println("Total time elapsed:", stats.totalTime)
-	fmt.Printf("Total states generated: %d\n", stats.totalStates)
-	fmt.Printf("Total states selected: %d\n", stats.totalOpenedStates)
-	fmt.Printf("Maximum states in the open set at once: %d\n", stats.maxStates)
+	fmt.Printf("Total states generated (time complexity): %d\n", stats.totalStates)
+	fmt.Printf("Total states expanded: %d\n", stats.totalOpenedStates)
+	fmt.Printf("Maximum states in the open set at once (space complexity): %d\n\n", stats.maxStates)
 }
 
 func makeGoalState(classic bool) (string, map[int][2]int, []int) {
