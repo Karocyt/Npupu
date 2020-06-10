@@ -13,7 +13,10 @@ func toop(grid []int, size int, depth int) float32 {
 	var score float32
 	for x := 0; x < size; x++ {
 		for y := 0; y < size; y++ {
-			score += tScore(finalState, grid[Get1d(x, y, size)], x, y, size)
+			val := grid[Get1d(x, y, size)]
+			if val != 0 {
+				score += tScore(finalState, val, x, y, size)
+			}
 		}
 	}
 	return score
