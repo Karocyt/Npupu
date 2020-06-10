@@ -1,7 +1,7 @@
 package heuristics
 
 func tScore(puzzle []int, nb int, x int, y int, size int) float32 {
-	nb1 := puzzle[Get1d(x, y, size)]
+	nb1 := puzzle[get1d(x, y, size)]
 	if nb == nb1 {
 		return 0
 	}
@@ -13,7 +13,7 @@ func toop(grid []int, size int, depth int) float32 {
 	var score float32
 	for x := 0; x < size; x++ {
 		for y := 0; y < size; y++ {
-			val := grid[Get1d(x, y, size)]
+			val := grid[get1d(x, y, size)]
 			if val != 0 {
 				score += tScore(finalState, val, x, y, size)
 			}

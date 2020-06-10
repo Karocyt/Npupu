@@ -14,6 +14,17 @@ type gridState struct {
 	id    int8
 }
 
+func get1d(x int, y int, size int) int {
+	return x*size + y
+}
+
+func get2d(nb int, size int) (int, int) {
+	var x, y int
+	x = nb / size
+	y = nb % size
+	return x, y
+}
+
 func (state *gridState) getVal(x, y int) int {
 	return state.grid[x*size+y]
 }
@@ -58,7 +69,6 @@ func (state *gridState) generateNextStates() []*gridState {
 		ret = append(ret, state.generateState(x, y, x, y+1))
 	}
 	for i := range ret {
-		//ret[i].id = int8(i)
 		ret[i].path[len(state.path)] = int8(i)
 	}
 	return ret

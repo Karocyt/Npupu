@@ -1,7 +1,5 @@
 package solver
 
-import "github.com/Karocyt/Npupu/internal/heuristics"
-
 func goBotRight(pupu []int, goal map[int][2]int, size int) ([]int, map[int][2]int) {
 	iz := -1
 	for i, v := range pupu {
@@ -22,7 +20,7 @@ func goBotRight(pupu []int, goal map[int][2]int, size int) ([]int, map[int][2]in
 		iz++
 	}
 	for i, v := range pupu {
-		x, y := heuristics.Get2d(i, size)
+		x, y := get2d(i, size)
 		goal[v] = [2]int{x, y}
 	}
 	return pupu, goal
@@ -33,7 +31,7 @@ func countInv(pupu []int, classic bool) (invCount int, distEmpty int) {
 	pupuF, goal = goBotRight(pupuF, goal, size)
 	get1D := func(lol int) int {
 		x, y := goal[lol][0], goal[lol][1]
-		return heuristics.Get1d(x, y, size)
+		return get1d(x, y, size)
 	}
 	distEmpty = size
 

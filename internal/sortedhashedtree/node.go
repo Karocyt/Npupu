@@ -38,19 +38,7 @@ func (node *Node) String() string {
 		ret += "R"
 	} else {
 		ret += "B"
-	} // + "["
-	// if node.parent != nil {
-	// 	ret += node.parent.key
-	// }
-	// ret += "l"
-	// if node.left != nil {
-	// 	ret += node.left.key
-	// }
-	// ret += "r"
-	// if node.right != nil {
-	// 	ret += node.right.key
-	// }
-	// ret += "]"
+	}
 	if node.right != nil {
 		ret += node.right.String()
 	}
