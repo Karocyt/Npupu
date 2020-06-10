@@ -11,10 +11,9 @@ func tScore(puzzle []int, nb int, x int, y int, size int) float32 {
 // Tiles out-of place
 func toop(grid []int, size int, depth int) float32 {
 	var score float32
-	puzzle, _ := MakeGoal(size)
 	for x := 0; x < size; x++ {
 		for y := 0; y < size; y++ {
-			score += tScore(puzzle, grid[Get1d(x, y, size)], x, y, size)
+			score += tScore(finalState, grid[Get1d(x, y, size)], x, y, size)
 		}
 	}
 	return score

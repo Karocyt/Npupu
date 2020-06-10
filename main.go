@@ -10,8 +10,6 @@ import (
 	"github.com/Karocyt/Npupu/internal/solver"
 )
 
-var Format string
-
 func printError(e error) {
 	if e == nil {
 		return
@@ -22,9 +20,9 @@ func printError(e error) {
 	os.Exit(1)
 }
 
-func parseCmd() (string, map[string]solver.ScoreFn, bool) {
+func parseCmd() (string, map[string]solver.ScoreFn, bool, bool) {
 	var filename string
-	var aStar, compare, uniform, display bool
+	var aStar, compare, uniform, display, classic bool
 	heuristic := 2
 
 	hUsage := "Available heuristics:\n"
@@ -40,16 +38,9 @@ func parseCmd() (string, map[string]solver.ScoreFn, bool) {
 	flag.BoolVar(&compare, "vs", false, "compare greedy search and Astar performance")
 	flag.BoolVar(&uniform, "ref", false, "adds uniform-cost search for reference")
 	flag.BoolVar(&display, "display", false, "force print of full solution in any case")
-	flag.StringVar(&Format, "format", "snail", "chose format of Npupu solution, snail or classic")
+	flag.BoolVar(&classic, "classic", false, "uses an ascendant order solution instead of a snail one")
 
 	flag.Parse()
-
-	if Format != "classic" && Format != "snail" {
-			fmt.Println("-format flag invalide:", Format)
-			flag.Usage()
-			os.Exit(1)
-	}
-
 
 	if heuristic < 1 || heuristic >= len(heuristics.Functions) || flag.NArg() != 0 {
 		flag.Usage()
@@ -67,19 +58,18 @@ func parseCmd() (string, map[string]solver.ScoreFn, bool) {
 		heuristicsMap[heuristics.Functions[0].Name] = heuristics.Functions[0].Fn
 	}
 
-	return filename, heuristicsMap, display
+	return filename, heuristicsMap, display, classic
 }
 
 func main() {
-	filename, heuristicsMap, display := parseCmd()
-	heuristics.Format = Format
-	solver.Format = Format
-	tmp, size, e := parser.Parse(filename)
+	filename, heuristicsMap, display, classic := parseCmd()
+	input, size, e := parser.Parse(filename)
 	printError(e)
 	solvers := make([]*solver.Solver, 0, 2)
-	solver.Init(size)
+	finalPos, finalGrid, input := solver.Init(size, classic, input)
+	heuristics.Init(finalGrid, finalPos)
 	for name, fn := range heuristicsMap {
-		s := solver.New(tmp, size, fn, name)
+		s := solver.New(input, size, fn, name)
 		solvers = append(solvers, s)
 		go s.Solve()
 	}

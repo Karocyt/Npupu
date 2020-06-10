@@ -1,8 +1,6 @@
-package parser
+package solver
 
-import (
-	"github.com/Karocyt/Npupu/internal/heuristics"
-)
+import "github.com/Karocyt/Npupu/internal/heuristics"
 
 func goBotRight(pupu []int, goal map[int][2]int, size int) ([]int, map[int][2]int) {
 	iz := -1
@@ -31,10 +29,8 @@ func goBotRight(pupu []int, goal map[int][2]int, size int) ([]int, map[int][2]in
 }
 
 func countInv(pupu []int, size int) (invCount int, distEmpty int) {
-	pupu_f, goal := heuristics.MakeGoal(size)
-	pupu_f, goal = goBotRight(pupu_f, goal, size)
 	get1D := func(lol int) int {
-		x, y := goal[lol][0], goal[lol][1]
+		x, y := goalMap[lol][0], goalMap[lol][1]
 		return heuristics.Get1d(x, y, size)
 	}
 	distEmpty = size
@@ -54,16 +50,13 @@ func countInv(pupu []int, size int) (invCount int, distEmpty int) {
 	return
 }
 
-func checkSolvy(pupu []int, size int) bool {
+func checkSolvy(pupu []int) bool {
 	invCount, distEmpty := countInv(pupu, size)
-
 	if size%2 == 1 {
 		return invCount%2 == 0
+	} else if distEmpty%2 == 0 {
+		return invCount%2 == 1 || invCount == 0
 	} else {
-		if distEmpty%2 == 0 {
-			return invCount%2 == 1 || invCount == 0
-		} else {
-			return invCount%2 == 0
-		}
+		return invCount%2 == 0
 	}
 }

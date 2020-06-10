@@ -2,6 +2,7 @@ package solver
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/Karocyt/Npupu/internal/sortedhashedtree"
@@ -12,7 +13,8 @@ type ScoreFn func([]int, int, int) float32
 
 var size int
 var goalKey string
-var Format string
+var goalMap map[int][2]int
+var finalGrid []int
 
 type counters struct {
 	maxStates         int
@@ -36,9 +38,16 @@ type Solver struct {
 }
 
 // Init initialize globals
-func Init(gridSize int) {
+func Init(gridSize int, classic bool, input []int) (map[int][2]int, []int, []int) {
 	size = gridSize
-	goalKey = makeGoalKey(size)
+	goalKey, goalMap, finalGrid = makeGoalState(size, classic)
+	if input == nil {
+		input = pupuRand()
+	} else if !checkSolvy(input) {
+		fmt.Println("Pupu is not solvable :3")
+		os.Exit(0)
+	}
+	return goalMap, finalGrid, input
 }
 
 // New initialize a new solverStruct, required to disciminate variables in multi-solving
@@ -72,7 +81,7 @@ func PrintStats(stats counters) {
 	fmt.Printf("Maximum states in the open set at once: %d\n", stats.maxStates)
 }
 
-func makeGoalKey(s int) string {
+func makeGoalState(s int, classic bool) (string, map[int][2]int, []int) {
 	nbPos := make(map[int][2]int)
 	puzzle := make([]int, s*s)
 	cur := 1
@@ -80,7 +89,21 @@ func makeGoalKey(s int) string {
 	ix := 1
 	y := 0
 	iy := 0
-	if Format == "snail" {
+	if classic {
+		for cur < s*s {
+			if x == s {
+				y++
+				x = 0
+			}
+			puzzle[x+y*s] = cur
+			nbPos[cur] = [2]int{y, x}
+			cur++
+
+			x++
+		}
+		nbPos[0] = [2]int{y, x}
+		puzzle[x+y*s] = 0
+	} else {
 		for cur < s*s {
 			puzzle[x+y*s] = cur
 			nbPos[cur] = [2]int{y, x}
@@ -99,26 +122,8 @@ func makeGoalKey(s int) string {
 		nbPos[0] = [2]int{y, x}
 		puzzle[x+y*s] = 0
 	}
-	if Format == "classic" {
-		for cur < s*s {
-			if x == s {
-				y++
-				x = 0
-			}
-			puzzle[x+y*s] = cur
-			nbPos[cur] = [2]int{y, x}
-			cur++
 
-			x++
-		}
-		nbPos[0] = [2]int{y, x}
-		puzzle[x+y*s] = 0
-	}
-		grid := gridState{
-			grid: puzzle,
-		}
-
-	return grid.mapKey()
+	return gridState{grid: puzzle}.mapKey(), nbPos, puzzle
 }
 
 // PrintRes prints.

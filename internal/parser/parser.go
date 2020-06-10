@@ -4,9 +4,11 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"math/rand"
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 var size int
@@ -103,15 +105,8 @@ func Parse(filename string) (pupu []int, size int, e error) {
 	if filename != "" {
 		pupu, size, e = read(filename)
 	} else {
-		pupu, size = pupu_rand()
-	}
-
-	if e == nil && !checkSolvy(pupu, size) {
-		fmt.Println("Pupu is not solvable :3")
-		os.Exit(0)
-	}
-	if e != nil {
-		return
+		rand.Seed(time.Now().UnixNano())
+		pupu, size = nil, rand.Intn(3)+3
 	}
 	return
 }
