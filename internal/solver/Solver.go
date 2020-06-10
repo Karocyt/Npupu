@@ -2,6 +2,7 @@ package solver
 
 import (
 	"fmt"
+	"math/rand"
 	"os"
 	"time"
 
@@ -38,11 +39,15 @@ type Solver struct {
 }
 
 // Init initialize globals
-func Init(gridSize int, classic bool, input []int) (map[int][2]int, []int, []int) {
+func Init(gridSize int, classic bool, input []int, randomSize int, shuffleCount int) (map[int][2]int, []int, []int) {
+	rand.Seed(time.Now().UnixNano())
 	size = gridSize
+	if input == nil {
+		size = randomSize
+	}
 	goalKey, goalMap, finalGrid = makeGoalState(classic)
 	if input == nil {
-		input = pupuRand()
+		input = pupuRand(shuffleCount)
 	} else if !checkSolvy(input, classic) {
 		fmt.Println("Pupu is not solvable :3")
 		os.Exit(0)

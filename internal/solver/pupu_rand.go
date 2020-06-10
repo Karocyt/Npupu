@@ -5,8 +5,8 @@ import (
 	"math/rand"
 )
 
-func pupuRand() []int {
-	nbMove := rand.Intn(150) + 50
+func pupuRand(shuffleCount int) []int {
+	nbMove := shuffleCount
 	pupu := finalGrid
 	var iz int
 	for i, v := range pupu {

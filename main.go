@@ -20,9 +20,10 @@ func printError(e error) {
 	os.Exit(1)
 }
 
-func parseCmd() (string, map[string]solver.ScoreFn, bool, bool) {
+func parseCmd() (string, map[string]solver.ScoreFn, bool, bool, int, int) {
 	var filename string
 	var aStar, compare, uniform, display, classic bool
+	var randomSize, shuffleCount int
 	heuristic := 2
 
 	hUsage := "Available heuristics:\n"
@@ -39,10 +40,13 @@ func parseCmd() (string, map[string]solver.ScoreFn, bool, bool) {
 	flag.BoolVar(&uniform, "ref", false, "adds uniform-cost search for reference")
 	flag.BoolVar(&display, "display", false, "force print of full solution in any case")
 	flag.BoolVar(&classic, "classic", false, "uses an ascendant order solution instead of a snail one")
+	flag.IntVar(&randomSize, "size", 3, "size of the generated puzzle if filename omitted, (3 minimum)")
+	flag.IntVar(&shuffleCount, "mix", 200, "numbers of scramblings of the generated puzzle if filename omitted")
 
 	flag.Parse()
 
-	if heuristic < 1 || heuristic >= len(heuristics.Functions) || flag.NArg() != 0 {
+	if heuristic < 1 || heuristic >= len(heuristics.Functions) || flag.NArg() != 0 ||
+		(filename != "" && randomSize < 3) || shuffleCount < 0 {
 		flag.Usage()
 		os.Exit(1)
 	}
@@ -58,15 +62,15 @@ func parseCmd() (string, map[string]solver.ScoreFn, bool, bool) {
 		heuristicsMap[heuristics.Functions[0].Name] = heuristics.Functions[0].Fn
 	}
 
-	return filename, heuristicsMap, display, classic
+	return filename, heuristicsMap, display, classic, randomSize, shuffleCount
 }
 
 func main() {
-	filename, heuristicsMap, display, classic := parseCmd()
+	filename, heuristicsMap, display, classic, randomSize, shuffleCount := parseCmd()
 	input, size, e := parser.Parse(filename)
 	printError(e)
 	solvers := make([]*solver.Solver, 0, 2)
-	finalPos, finalGrid, input := solver.Init(size, classic, input)
+	finalPos, finalGrid, input := solver.Init(size, classic, input, randomSize, shuffleCount)
 	heuristics.Init(finalGrid, finalPos)
 	for name, fn := range heuristicsMap {
 		s := solver.New(input, size, fn, name)

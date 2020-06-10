@@ -4,11 +4,9 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"math/rand"
 	"os"
 	"strconv"
 	"strings"
-	"time"
 )
 
 var size int
@@ -105,8 +103,7 @@ func Parse(filename string) (pupu []int, size int, e error) {
 	if filename != "" {
 		pupu, size, e = read(filename)
 	} else {
-		rand.Seed(time.Now().UnixNano())
-		pupu, size = nil, rand.Intn(3)+3
+		pupu, size = nil, -1
 	}
 	return
 }
