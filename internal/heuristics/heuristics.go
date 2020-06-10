@@ -14,6 +14,7 @@ var finalPos map[int][2]int
 // Functions is our slice of heuristics as couples {score func, name string, aStar func}
 var Functions = []heuristicFn{
 	heuristicFn{uniform, "Uniform-cost", nil},
+	heuristicFn{linearConflicts, "Linear Conflicts", linearConflictsA},
 	heuristicFn{manhattan, "Manhattan Distance", manhattanA},
 	heuristicFn{euclidean, "Euclidean Distance", euclideanA},
 	heuristicFn{toop, "Tiles-Out-Of-Place", toopA},
