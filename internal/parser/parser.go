@@ -36,6 +36,7 @@ func read(filename string) (pupu []int, size int, e error) {
 		e = errors.New("failed opening file: " + filename)
 		return
 	}
+	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanLines)
@@ -92,7 +93,6 @@ func read(filename string) (pupu []int, size int, e error) {
 		}
 		x++
 	}
-	file.Close()
 	e = checkPupu(pupu, size*size)
 	if e != nil {
 		return
