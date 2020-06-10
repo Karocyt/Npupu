@@ -40,10 +40,10 @@ type Solver struct {
 // Init initialize globals
 func Init(gridSize int, classic bool, input []int) (map[int][2]int, []int, []int) {
 	size = gridSize
-	goalKey, goalMap, finalGrid = makeGoalState(size, classic)
+	goalKey, goalMap, finalGrid = makeGoalState(classic)
 	if input == nil {
 		input = pupuRand()
-	} else if !checkSolvy(input) {
+	} else if !checkSolvy(input, classic) {
 		fmt.Println("Pupu is not solvable :3")
 		os.Exit(0)
 	}
@@ -81,7 +81,8 @@ func PrintStats(stats counters) {
 	fmt.Printf("Maximum states in the open set at once: %d\n", stats.maxStates)
 }
 
-func makeGoalState(s int, classic bool) (string, map[int][2]int, []int) {
+func makeGoalState(classic bool) (string, map[int][2]int, []int) {
+	s := size
 	nbPos := make(map[int][2]int)
 	puzzle := make([]int, s*s)
 	cur := 1

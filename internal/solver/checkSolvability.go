@@ -28,9 +28,11 @@ func goBotRight(pupu []int, goal map[int][2]int, size int) ([]int, map[int][2]in
 	return pupu, goal
 }
 
-func countInv(pupu []int, size int) (invCount int, distEmpty int) {
+func countInv(pupu []int, classic bool) (invCount int, distEmpty int) {
+	_, goal, pupuF := makeGoalState(classic)
+	pupuF, goal = goBotRight(pupuF, goal, size)
 	get1D := func(lol int) int {
-		x, y := goalMap[lol][0], goalMap[lol][1]
+		x, y := goal[lol][0], goal[lol][1]
 		return heuristics.Get1d(x, y, size)
 	}
 	distEmpty = size
@@ -50,13 +52,14 @@ func countInv(pupu []int, size int) (invCount int, distEmpty int) {
 	return
 }
 
-func checkSolvy(pupu []int) bool {
-	invCount, distEmpty := countInv(pupu, size)
+func checkSolvy(pupu []int, classic bool) bool {
+	invCount, distEmpty := countInv(pupu, classic)
+
 	if size%2 == 1 {
 		return invCount%2 == 0
-	} else if distEmpty%2 == 0 {
-		return invCount%2 == 1 || invCount == 0
-	} else {
-		return invCount%2 == 0
 	}
+	if distEmpty%2 == 0 {
+		return invCount%2 == 1 || invCount == 0
+	}
+	return invCount%2 == 0
 }
