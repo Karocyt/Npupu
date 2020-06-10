@@ -1,61 +1,56 @@
 package heuristics
 
+func minInt(x, y int) int {
+	if y < x {
+		return y
+	}
+	return x
+}
+
 func linearConflicts(grid []int, size int, depth int) float32 {
+	// for each cell after me in my row/column targetting the same row/column, conflict if his goal is behind me
 	conflicts := 0
 	for x1 := 0; x1 < size; x1++ {
-		for y1 := 0; y1 < size; y1++ {
+		for y1 := 0; y1 < size-1; y1++ {
 			if grid[Get1d(x1, y1, size)] != 0 {
 				tmp := finalPos[grid[Get1d(x1, y1, size)]]
 				targetx, targety := tmp[0], tmp[1]
-				if (x1 == targetx) && (y1 != targety) {
-					// Case 1: my x is ok
-					var incr int
-					if targety > y1 {
-						incr = 1
-					} else {
-						incr = -1
-					}
-					for j := y1 + incr; j != targety+incr; j += incr {
-						if grid[Get1d(x1, j, size)] != 0 && finalPos[grid[Get1d(x1, y1, size)]][0] == x1 {
-							conflicts++
+				if (x1 == targetx) != (y1 == targety) {
+					if (x1 == targetx) && (y1 < targety) {
+						// Case 1: my x is ok, my target in on my right
+						// I check the other ones in this line
+						for j := y1; j < size; j++ {
+							currPos := Get1d(x1, j, size)
+							if grid[currPos] != 0 {
+								currGoalPos := finalPos[grid[currPos]]
+								// if his target is this line and his goal is behind me
+								if currGoalPos[0] == x1 && targety >= j && currGoalPos[1] <= targety {
+									conflicts++
+								}
+							}
 						}
 					}
-				} else if (y1 == targety) && (x1 != targetx) {
-					// Case 2 my y is ok
-					var incr int
-					if targetx > x1 {
-						incr = 1
-					} else {
-						incr = -1
-					}
-					for i := x1 + incr; i != targetx+incr; i += incr {
-						if grid[Get1d(i, y1, size)] != 0 && finalPos[grid[Get1d(x1, y1, size)]][1] == y1 {
-							conflicts++
+					if (y1 == targety) && (x1 < targetx) {
+						// Case 2: my y is ok, my target is under me
+						// I check the other ones in this col
+						for i := x1; i < size; i++ {
+							currPos := Get1d(i, y1, size)
+							if grid[currPos] != 0 {
+								currGoalPos := finalPos[grid[currPos]]
+								// if his target is this col and his goal is behind me
+								if currGoalPos[1] == y1 && targetx >= i && currGoalPos[0] <= targetx {
+									conflicts++
+								}
+							}
 						}
 					}
 				}
 			}
-
 		}
 	}
+	//fmt.Println(conflicts)
 	return manhattan(grid, size, depth) + 2*float32(conflicts)
 }
-
-// Solution using A* Linear Conflicts:
-
-// Solution found: 58 moves
-// Total time elapsed: 12.17546976s
-// Total states generated: 5744007
-// Total states selected: 2906101
-// Maximum states in the open set at once: 2837908
-
-// Solution using A* Manhattan Distance:
-
-// Solution found: 54 moves
-// Total time elapsed: 21.983975547s
-// Total states generated: 11408118
-// Total states selected: 6128715
-// Maximum states in the open set at once: 5279405
 
 func linearConflictsA(grid []int, size int, depth int) float32 {
 	return linearConflicts(grid, size, depth) + float32(depth)
