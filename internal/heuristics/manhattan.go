@@ -11,7 +11,10 @@ func manhattan(grid []int, size int, depth int) float32 {
 	var score float32
 	for x := 0; x < size; x++ {
 		for y := 0; y < size; y++ {
-			score += mScore(grid[Get1d(x, y, size)], x, y, size, finalPos)
+			val := grid[Get1d(x, y, size)]
+			if val != 0 {
+				score += mScore(val, x, y, size, finalPos)
+			}
 		}
 	}
 	return score
