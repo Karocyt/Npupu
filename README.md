@@ -71,7 +71,8 @@ From worst to best, this is the heuristics we implemented, from lazy to almigthy
 3. **Mannathan/Taxicab distance**: sum of the taxicab distances of each tile to its final position (with only horizontal/vertical travel)
 4. **Linear Collisions**: takes the mannathan distance and adds 2 moves when tiles are in linear conflict (when 2 tiles are in the same final row or column wich is their final one, but should be in reverse order on the other axis. Hence, *at least* 2 moves would be needed for the dodging operation)
 
-All these heuristics are *Admissible*, meaning that they assure you to find the shortest path in an Astar implementation by having 2 properties:
+All these heuristics are *Admissible*, meaning that they assure you to find the shortest path in an Astar implementation faster than a Uniform Cost Search by having 3 properties:
+- They give a meaningful information
 - The goal state is the one with the lowest score
 - They are "optimistic": the score difference with the goal state is never higher than the number of moves required to reach this state
 
