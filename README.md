@@ -1,5 +1,5 @@
 # N-puzzle solver
-Astar solver for n-puzzle (sliding tiles, mystic square...)
+A* solver for n-puzzle (sliding tiles, mystic square...)
 
 ## Input file format
 If you want to provide you own input files, the first line should be the width of your puzzle. The following lines are the multiline space separated puzzle itself. "0" being the empty tile with all tiles ranging from 1 to size*size-1.
