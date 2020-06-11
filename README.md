@@ -25,7 +25,7 @@ In case you don't provide a file, our generator will take care of you, please re
     go build
 
 ## Usage
-    > ./npuzzle -help
+    > ./npupu -help
     -classic
         uses an ascendant order solution instead of a snail one
     -display
