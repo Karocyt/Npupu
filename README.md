@@ -4,9 +4,13 @@ Astar solver for n-puzzle (sliding tiles, mystic square...)
 ## Input file format
 If you want to provide you own input files, the first line should be the width of your puzzle. The following lines are the puzzle itself. "0" being the empty tile with all tiles ranging from 1 to size*size-1.
 By default, the goal state to reach is a snail one :
+
+| - | - | - |
 | 1 | 2 | 3 |
 | 8 | 0 | 4 |
 | 7 | 6 | 5 |
+| - | - | - |
+
 A classic mode is also available (ascending order with empty tile at the very end)
 
 In case you don't provide a file, our generator will take care of you, please refer to the Usage section for options.
