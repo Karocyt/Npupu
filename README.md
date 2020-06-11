@@ -1,8 +1,8 @@
 # N-puzzle solver
-A* solver for n-puzzle (sliding tiles, mystic square...)
+A* solver for n-puzzle (sliding tiles, mystic square...) using different heuristics, relying only on the standard library.
 
 ## Input file format
-If you want to provide you own input files, the first line should be the width of your puzzle. The following lines are the multiline space separated puzzle itself. "0" being the empty tile with all tiles ranging from 1 to size*size-1.
+If you want to provide your own input files, the first line should be the width of your puzzle. The following lines are the multiline space separated puzzle itself. "0" being the empty tile with all tiles ranging from 1 to size*size-1.
 
     > cat example.txt
     3
@@ -51,7 +51,7 @@ In case you don't provide a file, our generator will take care of you, please re
             compare greedy search and Astar performance
 
 ## Structure
-This program is structured in 4 Go Modules:
+This program is structured in 4 independant Go Modules:
 - **parser**: reads the input file and check syntax
 - **heuristics**: define the canonical heuristic function prototype and contains all our different heuristics
 - **sortedhashedtree**: define our data structure with a red-black self-balancing binary search tree for quick access to the lowest score node, with a hashtable to fast access to a specific node
